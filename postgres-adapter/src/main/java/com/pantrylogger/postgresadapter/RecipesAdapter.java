@@ -1,13 +1,14 @@
 package com.pantrylogger.postgresadapter;
 
-import java.util.List;
-
+import com.pantrylogger.domain.recipes.RecipeQueryPort;
 import org.springframework.stereotype.Component;
 
-import com.pantrylogger.domain.recipes.RecipeQueryPort;
+import java.util.List;
 
 @Component
 public class RecipesAdapter implements RecipeQueryPort {
+
+    @Override
     public List<String> getAll() {
         return List.of(
             "Recipe1",

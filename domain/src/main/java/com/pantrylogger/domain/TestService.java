@@ -1,14 +1,19 @@
 package com.pantrylogger.domain;
 
-import org.springframework.stereotype.Service;
-
 import com.pantrylogger.domain.recipes.RecipeQueryPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TestService {
+
+    private static Logger log = LoggerFactory.getLogger(TestService.class.getName());
+
     public TestService(
-        RecipeQueryPort recipeQueryPort
+            RecipeQueryPort recipeQueryPort
     ) {
-        System.out.println(recipeQueryPort.getAll().toString());
+        log.info(recipeQueryPort.getAll().toString());
     }
+
 }
