@@ -1,0 +1,12 @@
+logging:
+    level:
+        com.pantrylogger:
+            ROOT: ${LOGGING_LEVEL:TRACE}
+management:
+    health:
+        probes:
+            enabled: true
+spring:
+    threads:
+        virtual:
+            enabled: true
