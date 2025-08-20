@@ -31,3 +31,8 @@ jobs:
 
     - name: Test with Gradle Wrapper
       run: ./gradlew test 
+
+    - name: Submit Sonar Report
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: ./gradlew sonar
