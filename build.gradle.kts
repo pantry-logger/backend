@@ -73,12 +73,15 @@ allprojects {
 }
 
 dependencies {
+    "runtimeOnly"(project(":domain"))
+    "runtimeOnly"(project(":postgres-adapter"))
+
     "implementation"("org.springframework.boot:spring-boot-starter")
     "implementation"("org.springframework.boot:spring-boot-autoconfigure")
     "implementation"("org.springframework.boot:spring-boot")
     "implementation"("org.springframework.boot:spring-boot-configuration-processor")
 
-
+    "testImplementation"(project(":domain"))
 
     "testImplementation"("org.springframework.boot:spring-boot-starter-web")
     "testImplementation"("org.springframework.boot:spring-boot-starter-test")
