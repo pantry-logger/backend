@@ -13,8 +13,8 @@ val wiremockVersion: String by project
 
 plugins {
     id("buildlogic.java-application-conventions")
-    id("org.springframework.boot") version "3.3.0"
-    id("io.spring.dependency-management") version "1.1.5"
+    id("org.springframework.boot") version "4.0.0-M1"
+    id("io.spring.dependency-management") version "1.1.7"
     id("org.sonarqube") version "5.0.0.4638"
     id("jacoco-report-aggregation")
     id("pmd")
@@ -22,32 +22,44 @@ plugins {
 }
 
 version = "0.0.1-SNAPSHOT"
+description = "hello"
 
 allprojects {
     apply(plugin = "java")
     apply(plugin = "jacoco")
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
+
     repositories {
         mavenCentral()
     }
+
     tasks.withType(JavaCompile::class) {
         sourceCompatibility = JavaVersion.VERSION_21.toString()
         options.compilerArgs.add("-Werror")
     }
+
     sonar {
         properties {
             property("sonar.sources", "src/main")
             property("sonar.tests", "src/test")
         }
     }
+    
     pmd {
         toolVersion = "7.1.0"
         isConsoleOutput = true
     }
 
+    // checkstyle {
+    //     toolVersion = "10.12.4"
+    // }
+
     dependencies {
+        "implementation"("org.springframework.boot:spring-boot-autoconfigure")
+
         "testImplementation"("org.junit.jupiter:junit-jupiter:5.13.4")
+
         "testRuntimeOnly"("org.junit.platform:junit-platform-launcher")
     }
 
@@ -75,13 +87,15 @@ allprojects {
 dependencies {
     "runtimeOnly"(project(":domain"))
     "runtimeOnly"(project(":postgres-adapter"))
+    "runtimeOnly"(project(":rest-api"))
 
     "implementation"("org.springframework.boot:spring-boot-starter")
-    "implementation"("org.springframework.boot:spring-boot-autoconfigure")
     "implementation"("org.springframework.boot:spring-boot")
     "implementation"("org.springframework.boot:spring-boot-configuration-processor")
 
     "testImplementation"(project(":domain"))
+    "testImplementation"(project(":postgres-adapter"))
+    "testImplementation"(project(":rest-api"))
 
     "testImplementation"("org.springframework.boot:spring-boot-starter-web")
     "testImplementation"("org.springframework.boot:spring-boot-starter-test")
@@ -90,29 +104,42 @@ dependencies {
 
 subprojects {
     group = "com.pantrylogger"
+
     pmd {
         ruleSetFiles = files("../config/pmd.xml")
     }
+
     checkstyle {
         configFile = file("../config/checkstyle.xml")
     }
+
     tasks.withType<JacocoReport> {
         reports {
             xml.required.set(false)
         }
     }
+
+    dependencies {
+        "implementation"("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+        "implementation"("org.slf4j:slf4j-api")
+        "testImplementation"("org.mockito:mockito-core")
+    }
 }
+
 pmd {
     ruleSetFiles = files("./config/pmd.xml")
 }
+
 checkstyle {
     configFile = file("./config/checkstyle.xml")
 }
+
 tasks.withType<JacocoReport> {
     reports {
         xml.required.set(true)
     }
 }
+
 sonar {
     properties {
         property("sonar.projectKey", "pantry-logger_backend")

@@ -99,8 +99,8 @@
         <module name="IllegalType"/>
 
         <module name="ImportOrder">
-            <property name="groups" value="*,javax,java"/>
-            <property name="option" value="bottom"/>
+            <property name="groups" value="java,*,com.pantrylogger"/>
+            <property name="option" value="above"/>
             <property name="ordered" value="true"/>
             <property name="separated" value="true"/>
             <property name="sortStaticImportsAlphabetically" value="true"/>
@@ -188,7 +188,7 @@
         <module name="RedundantModifier"/>
 
         <module name="RequireThis">
-            <property name="checkMethods" value="false"/>
+            <property name="checkMethods" value="true"/>
         </module>
 
         <module name="ReturnCount">

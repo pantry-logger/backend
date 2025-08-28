@@ -19,5 +19,6 @@ plugins {
 rootProject.name = "backend"
 include(
     "domain",
-    "postgres-adapter"
+    "postgres-adapter",
+    "rest-api"
 )
