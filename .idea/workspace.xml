@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e074678b-8b29-4ebf-830a-ef9deb698174" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.env-template" beforeDir="false" afterPath="$PROJECT_DIR$/.env-template" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/domain/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/postgres-adapter/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/postgres-adapter/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="32JURrLokkHupbxnSrvNTFFlBFf" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "initial-ingredient"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e074678b-8b29-4ebf-830a-ef9deb698174" name="Changes" comment="" />
+      <created>1757138164152</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1757138164152</updated>
+    </task>
+    <servers />
+  </component>
+</project>

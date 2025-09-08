@@ -1,0 +1,47 @@
+### Get all ingredients
+GET http://localhost:8080/ingredients
+Accept: application/json
+
+###
+
+### Create a new ingredient and capture UUID
+POST http://localhost:8080/ingredients
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Tomato",
+  "description": "Fresh red tomato"
+}
+
+> {% client.global.set("ingredientUuid", response.body.uuid) %}
+
+###
+
+### Get all ingredients
+GET http://localhost:8080/ingredients
+Accept: application/json
+
+###
+
+### Get ingredient by UUID (captured from POST)
+GET http://localhost:8080/ingredients/{{ingredientUuid}}
+Accept: application/json
+
+###
+
+### Update ingredient by UUID (captured from POST)
+PATCH http://localhost:8080/ingredients/{{ingredientUuid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Cherry Tomato",
+  "description": "Small sweet tomato"
+}
+
+### Get ingredient by UUID after Patch (captured from POST)
+GET http://localhost:8080/ingredients/{{ingredientUuid}}
+Accept: application/json
+
+###

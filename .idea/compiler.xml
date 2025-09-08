@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="21" />
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-parameters -Werror" />
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="backend.domain" options="-Werror -parameters" />
+      <module name="backend.domain.main" options="-Werror -parameters" />
+      <module name="backend.domain.test" options="-Werror -parameters" />
+      <module name="backend.postgres-adapter" options="-Werror -parameters" />
+      <module name="backend.postgres-adapter.main" options="-Werror -parameters" />
+      <module name="backend.postgres-adapter.test" options="-Werror -parameters" />
+      <module name="backend.rest-api" options="-Werror -parameters" />
+      <module name="backend.rest-api.main" options="-Werror -parameters" />
+      <module name="backend.rest-api.test" options="-Werror -parameters" />
+      <module name="build-logic" options="" />
+      <module name="build-logic.main" options="" />
+      <module name="build-logic.test" options="" />
+    </option>
+  </component>
+</project>

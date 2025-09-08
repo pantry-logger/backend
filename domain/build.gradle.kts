@@ -10,6 +10,7 @@ version = "0.0.1-SNAPSHOT"
 
 dependencies {
     implementation("org.springframework:spring-context")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 }
 tasks.getByName<BootJar>("bootJar") {
     enabled = false
