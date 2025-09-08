@@ -24,10 +24,6 @@ public class Ingredient {
         return uuid;
     }
 
-    public void setUuid(IngredientUUID uuid) {
-        this.uuid = uuid;
-    }
-
     public String getName() {
         return name;
     }
