@@ -18,11 +18,11 @@ public class UpdateIngredientUseCase {
     public Ingredient updateIngredient(
             UUID uuid,
             UpdateIngredientCommand updateIngredientCommand) {
-        return this.ingredientRepository.save(
-                new Ingredient(
-                        new IngredientUUID(uuid),
-                        updateIngredientCommand.name(),
-                        updateIngredientCommand.description()));
+
+        Ingredient ingredient = this.ingredientRepository.getByUUID(new IngredientUUID(uuid));
+        ingredient.setName(updateIngredientCommand.name());
+        ingredient.setName(updateIngredientCommand.description());
+        return this.ingredientRepository.save(ingredient);
     }
 
 }

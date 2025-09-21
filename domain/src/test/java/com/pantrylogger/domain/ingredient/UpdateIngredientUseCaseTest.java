@@ -15,6 +15,7 @@ class UpdateIngredientUseCaseTest {
     private UpdateIngredientUseCase updateIngredientUseCase;
     private UUID ingredientUUID;
     private UpdateIngredientCommand updateIngredientCommand;
+    private Ingredient originalIngredient;
     private Ingredient expectedIngredient;
 
     @BeforeEach
@@ -25,10 +26,19 @@ class UpdateIngredientUseCaseTest {
         this.ingredientUUID = UUID.randomUUID();
         this.updateIngredientCommand = new UpdateIngredientCommand("Crunchy Carrot", "Even crunchier orange stick");
 
+        this.originalIngredient = new Ingredient(
+                new IngredientUUID(ingredientUUID),
+                "Carrot",
+                "Crunchy orange stick");
+
         this.expectedIngredient = new Ingredient(
                 new IngredientUUID(ingredientUUID),
                 "Crunchy Carrot",
                 "Even crunchier orange stick");
+
+        Mockito
+                .when(mockIngredientRepository.getByUUID(new IngredientUUID(this.ingredientUUID)))
+                .thenReturn(this.originalIngredient);
 
         Mockito.when(mockIngredientRepository.save(Mockito.any(Ingredient.class)))
                 .thenReturn(this.expectedIngredient);
