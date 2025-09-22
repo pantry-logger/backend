@@ -24,7 +24,7 @@ public class UpdateIngredientUseCase {
 
         Ingredient ingredient = this.ingredientRepository.getByUUID(new IngredientUUID(uuid));
         ingredient.setName(updateIngredientCommand.name());
-        ingredient.setName(updateIngredientCommand.description());
+        ingredient.setDescription(updateIngredientCommand.description());
         return this.ingredientRepository.save(ingredient);
     }
 
