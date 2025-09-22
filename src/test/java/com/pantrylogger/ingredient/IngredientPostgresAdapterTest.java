@@ -2,8 +2,6 @@ package com.pantrylogger.ingredient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,8 +11,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.pantrylogger.domain.IngredientFixture;
 import com.pantrylogger.domain.ingredient.Ingredient;
-import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.ingredient.IngredientRepositoryPort;
 
 @SpringBootTest
@@ -41,16 +39,13 @@ class IngredientPostgresAdapterTest {
 
     @Test
     void testSaveAndRetrieveIngredient() {
-        Ingredient ingredient = new Ingredient(
-                new IngredientUUID(UUID.randomUUID()),
-                "Tomato",
-                "Red and juicy");
+        Ingredient ingredient = IngredientFixture.created_tomato();
 
         ingredientRepository.save(ingredient);
 
         var found = ingredientRepository.getByUUID(ingredient.getUuid());
 
-        assertEquals("Tomato", found.getName());
-        assertEquals("Red and juicy", found.getDescription());
+        assertEquals(ingredient.getName(), found.getName());
+        assertEquals(ingredient.getDescription(), found.getDescription());
     }
 }

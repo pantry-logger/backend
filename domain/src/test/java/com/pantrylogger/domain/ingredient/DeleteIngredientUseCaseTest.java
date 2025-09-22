@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.pantrylogger.domain.IngredientFixture;
 import com.pantrylogger.domain.exception.EntityNotFoundException;
 import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 
@@ -17,15 +18,8 @@ class DeleteIngredientUseCaseTest {
     private DeleteIngredientUseCase deleteIngredientUseCase;
 
     private IngredientRepositoryPort mockIngredientRepository = Mockito.mock(IngredientRepositoryPort.class);
-    private IngredientUUID badUUID = new IngredientUUID("3146cc20-3461-41be-8ae0-b3dc3aea47c3");
-
-    private Ingredient getIngredient() {
-        return new Ingredient(
-                new IngredientUUID(
-                        "b505467e-58ad-4c75-895a-baeea3ec15b6"),
-                "Tomato",
-                "Fresh red tomato");
-    }
+    private IngredientUUID badUUID = IngredientFixture.badUUID();
+    private Ingredient ingredient = IngredientFixture.tomato();
 
     @BeforeEach
     void setup() {
@@ -40,8 +34,8 @@ class DeleteIngredientUseCaseTest {
     @Test
     void deleteIngredientByUuidShouldReturnIngredientAsOptional() {
         this.deleteIngredientUseCase
-                .deleteIngredient(this.getIngredient().getUuid().uuid());
-        verify(this.mockIngredientRepository, times(1)).delete(this.getIngredient().getUuid());
+                .deleteIngredient(this.ingredient.getUuid().uuid());
+        verify(this.mockIngredientRepository, times(1)).delete(this.ingredient.getUuid());
     }
 
     @Test

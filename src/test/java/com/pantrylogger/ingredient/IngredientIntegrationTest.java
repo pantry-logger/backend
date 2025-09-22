@@ -20,9 +20,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.pantrylogger.domain.IngredientFixture;
 import com.pantrylogger.domain.ingredient.CreateIngredientCommand;
 import com.pantrylogger.domain.ingredient.Ingredient;
-import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.ingredient.IngredientRepositoryPort;
 
 @SpringBootTest
@@ -45,8 +45,8 @@ class IngredientIntegrationTest {
     @Autowired
     private IngredientRepositoryPort ingredientRepository;
 
-    private String ingredientUUID1 = "11111111-1111-1111-1111-111111111111";
-    private String ingredientUUID2 = "22222222-2222-2222-2222-222222222222";
+    private Ingredient carrot = IngredientFixture.carrot();
+    private Ingredient tomato = IngredientFixture.tomato();
 
     private String message = "$.message";
     private String name = "$.name";
@@ -66,16 +66,8 @@ class IngredientIntegrationTest {
 
     @BeforeEach
     void setUpTestData() {
-        ingredientRepository.save(
-                new Ingredient(
-                        new IngredientUUID(this.ingredientUUID1),
-                        "Carrot",
-                        "Crunchy orange stick"));
-        ingredientRepository.save(
-                new Ingredient(
-                        new IngredientUUID(this.ingredientUUID2),
-                        "Salt",
-                        "Tastes like the sea"));
+        ingredientRepository.save(this.carrot);
+        ingredientRepository.save(this.tomato);
     }
 
     @Test
@@ -88,40 +80,31 @@ class IngredientIntegrationTest {
 
     @Test
     void testGetIngredientReturnsIngredient() throws Exception {
-        mockMvc.perform(get(this.ingredientsEndPoint + "/" + this.ingredientUUID1))
+        mockMvc.perform(get(this.ingredientsEndPoint + "/" + this.carrot.getUuid().uuid().toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid").exists())
-                .andExpect(jsonPath("$.uuid").value(ingredientUUID1))
-                .andExpect(jsonPath(this.name).value("Carrot"));
+                .andExpect(jsonPath("$.uuid").value(this.carrot.getUuid().uuid().toString()))
+                .andExpect(jsonPath(this.name).value(this.carrot.getName()));
     }
 
     @Test
     void testCreateIngredientReturnsCreatedIngredient() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand(this.createdIngredientName, "Red and Juicy");
+        CreateIngredientCommand command = new CreateIngredientCommand(
+                IngredientFixture.created_tomato().getName(),
+                IngredientFixture.created_tomato().getDescription());
 
         mockMvc.perform(post(this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.uuid").exists())
-                .andExpect(jsonPath(this.name).value(this.createdIngredientName));
-    }
-
-    @Test
-    void testCreateIngredientWithValidCommand() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand(this.createdIngredientName, "Red and juicy");
-
-        mockMvc.perform(post(this.ingredientsEndPoint)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath(this.name).value(this.createdIngredientName))
-                .andExpect(jsonPath(this.description).value("Red and juicy"));
+                .andExpect(jsonPath(this.name).value(IngredientFixture.created_tomato().getName()));
     }
 
     @Test
     void testCreateIngredientWithNullName() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand(null, this.createdIngredientDescription);
+        CreateIngredientCommand command = new CreateIngredientCommand(null,
+                IngredientFixture.created_tomato().getDescription());
 
         mockMvc.perform(post(this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -132,7 +115,8 @@ class IngredientIntegrationTest {
 
     @Test
     void testCreateIngredientWithBlankName() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand("", this.createdIngredientDescription);
+        CreateIngredientCommand command = new CreateIngredientCommand("",
+                IngredientFixture.created_tomato().getDescription());
 
         mockMvc.perform(post(this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -143,7 +127,8 @@ class IngredientIntegrationTest {
 
     @Test
     void testCreateIngredientWithWhitespaceOnlyName() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand("   ", this.createdIngredientDescription);
+        CreateIngredientCommand command = new CreateIngredientCommand("   ",
+                IngredientFixture.created_tomato().getDescription());
 
         mockMvc.perform(post(this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -154,7 +139,8 @@ class IngredientIntegrationTest {
 
     @Test
     void testCreateIngredientWithNameTooShort() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand("A", this.createdIngredientDescription);
+        CreateIngredientCommand command = new CreateIngredientCommand("A",
+                IngredientFixture.created_tomato().getDescription());
 
         mockMvc.perform(post(this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -166,7 +152,8 @@ class IngredientIntegrationTest {
     @Test
     void testCreateIngredientWithNameTooLong() throws Exception {
         String longName = "A".repeat(51); // 51 characters
-        CreateIngredientCommand command = new CreateIngredientCommand(longName, this.createdIngredientDescription);
+        CreateIngredientCommand command = new CreateIngredientCommand(longName,
+                IngredientFixture.created_tomato().getDescription());
 
         mockMvc.perform(post(this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -177,7 +164,8 @@ class IngredientIntegrationTest {
 
     @Test
     void testCreateIngredientWithMinValidNameLength() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand("AB", this.createdIngredientDescription);
+        CreateIngredientCommand command = new CreateIngredientCommand("AB",
+                IngredientFixture.created_tomato().getDescription());
 
         mockMvc.perform(post(this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -189,7 +177,8 @@ class IngredientIntegrationTest {
     @Test
     void testCreateIngredientWithMaxValidNameLength() throws Exception {
         String maxName = "A".repeat(50); // 50 characters
-        CreateIngredientCommand command = new CreateIngredientCommand(maxName, this.createdIngredientDescription);
+        CreateIngredientCommand command = new CreateIngredientCommand(maxName,
+                IngredientFixture.created_tomato().getDescription());
 
         mockMvc.perform(post(this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -200,7 +189,9 @@ class IngredientIntegrationTest {
 
     @Test
     void testCreateIngredientWithNullDescription() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand(this.createdIngredientName, null);
+        CreateIngredientCommand command = new CreateIngredientCommand(
+                IngredientFixture.created_tomato().getName(),
+                null);
 
         mockMvc.perform(post(this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -211,13 +202,15 @@ class IngredientIntegrationTest {
 
     @Test
     void testCreateIngredientWithEmptyDescription() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand(this.createdIngredientName, "");
+        CreateIngredientCommand command = new CreateIngredientCommand(
+                IngredientFixture.created_tomato().getName(),
+                "");
 
         mockMvc.perform(post(this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath(this.name).value(this.createdIngredientName))
+                .andExpect(jsonPath(this.name).value(IngredientFixture.created_tomato().getName()))
                 .andExpect(jsonPath(this.description).value(""));
     }
 

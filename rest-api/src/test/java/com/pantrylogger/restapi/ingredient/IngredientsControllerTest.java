@@ -5,20 +5,19 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 
+import com.pantrylogger.domain.IngredientFixture;
 import com.pantrylogger.domain.ingredient.CreateIngredientCommand;
 import com.pantrylogger.domain.ingredient.CreateIngredientUseCase;
 import com.pantrylogger.domain.ingredient.DeleteIngredientUseCase;
 import com.pantrylogger.domain.ingredient.GetAllIngredientsUseCase;
 import com.pantrylogger.domain.ingredient.GetIngredientByUuidUseCase;
 import com.pantrylogger.domain.ingredient.Ingredient;
-import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.ingredient.UpdateIngredientCommand;
 import com.pantrylogger.domain.ingredient.UpdateIngredientUseCase;
 
@@ -32,8 +31,7 @@ class IngredientsControllerTest {
     private UpdateIngredientUseCase updateIngredientUseCase;
     private DeleteIngredientUseCase deleteIngredientUseCase;
 
-    private UUID ingredientUUID;
-    private Ingredient testIngredient;
+    private Ingredient testIngredient = IngredientFixture.carrot();
 
     @BeforeEach
     void setup() {
@@ -49,12 +47,6 @@ class IngredientsControllerTest {
                 this.createIngredientUseCase,
                 this.updateIngredientUseCase,
                 this.deleteIngredientUseCase);
-
-        ingredientUUID = UUID.randomUUID();
-        testIngredient = new Ingredient(
-                new IngredientUUID(ingredientUUID),
-                "Salt",
-                "Tastes like the sea");
     }
 
     @Test
@@ -65,58 +57,58 @@ class IngredientsControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
-        assertEquals("Salt", response.getBody().get(0).name());
+        assertEquals(testIngredient.getName(), response.getBody().get(0).name());
     }
 
     @Test
     void findByUuidShouldReturnIngredientIfExists() {
-        when(this.getIngredientByUuidUseCase.getIngredientByUuid(new IngredientUUID(this.ingredientUUID)))
+        when(this.getIngredientByUuidUseCase.getIngredientByUuid(this.testIngredient.getUuid()))
                 .thenReturn(this.testIngredient);
 
-        var response = this.controller.findByUuid(this.ingredientUUID);
+        var response = this.controller.findByUuid(this.testIngredient.getUuid().uuid());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Salt", response.getBody().name());
+        assertEquals(this.testIngredient.getName(), response.getBody().name());
     }
 
     @Test
     void createNewShouldReturnCreatedIngredient() {
-        CreateIngredientCommand command = new CreateIngredientCommand("Sugar", "Sweet");
-        Ingredient createdIngredient = new Ingredient(
-                new IngredientUUID(UUID.randomUUID()),
-                "Sugar",
-                "Sweet");
+        CreateIngredientCommand command = new CreateIngredientCommand(
+                IngredientFixture.created_tomato().getName(),
+                IngredientFixture.created_tomato().getDescription());
+        Ingredient createdIngredient = IngredientFixture.created_tomato();
 
         when(this.createIngredientUseCase.createIngredient(command)).thenReturn(createdIngredient);
 
         var response = this.controller.createNew(command);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Sugar", response.getBody().name());
+        assertEquals(createdIngredient.getName(), response.getBody().name());
     }
 
     @Test
     void updateShouldReturnUpdatedIngredient() {
-        UpdateIngredientCommand command = new UpdateIngredientCommand("Pepper", "Spicy");
-        Ingredient updatedIngredient = new Ingredient(
-                new IngredientUUID(this.ingredientUUID),
-                "Pepper",
-                "Spicy");
+        UpdateIngredientCommand command = new UpdateIngredientCommand(
+                IngredientFixture.updated_carrot().getName(),
+                IngredientFixture.updated_carrot().getDescription());
 
-        when(this.updateIngredientUseCase.updateIngredient(this.ingredientUUID, command)).thenReturn(updatedIngredient);
+        Ingredient updatedIngredient = IngredientFixture.updated_carrot();
+        when(this.updateIngredientUseCase.updateIngredient(
+                this.testIngredient.getUuid().uuid(), command))
+                .thenReturn(updatedIngredient);
 
-        var response = this.controller.update(this.ingredientUUID, command);
+        var response = this.controller.update(this.testIngredient.getUuid().uuid(), command);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Pepper", response.getBody().name());
-        assertEquals("Spicy", response.getBody().description());
+        assertEquals(updatedIngredient.getName(), response.getBody().name());
+        assertEquals(updatedIngredient.getDescription(), response.getBody().description());
     }
 
     @Test
     void DeleteShouldReturnOk() {
-        doNothing().when(deleteIngredientUseCase).deleteIngredient(this.ingredientUUID);
+        doNothing().when(deleteIngredientUseCase).deleteIngredient(this.testIngredient.getUuid().uuid());
 
-        var response = this.controller.delete(this.ingredientUUID);
+        var response = this.controller.delete(this.testIngredient.getUuid().uuid());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
