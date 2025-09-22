@@ -1,5 +1,6 @@
 package com.pantrylogger.domain.ingredient;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Ingredient {
@@ -50,17 +51,12 @@ public class Ingredient {
         }
 
         Ingredient that = (Ingredient) o;
-        return uuid.equals(that.uuid) &&
-                name.equals(that.name) &&
-                description.equals(that.description);
+        return this.hashCode() == that.hashCode();
     }
 
     @Override
     public int hashCode() {
-        int result = uuid != null ? uuid.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        return result;
+        return Objects.hash(this.uuid, this.name, this.description);
     }
 
 }
