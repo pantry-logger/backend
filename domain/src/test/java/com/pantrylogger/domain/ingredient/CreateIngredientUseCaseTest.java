@@ -13,8 +13,8 @@ import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 class CreateIngredientUseCaseTest {
 
     private CreateIngredientUseCase createIngredientUseCase;
-    private CreateIngredientCommand createIngredientCommand = new CreateIngredientCommand(
-            "Carrot",
+    private CreateIngredientCommand createIngredientCommand =
+            new CreateIngredientCommand("Carrot",
             "Crunchy orange stick");
     private Ingredient expectedIngredient = new Ingredient(
             new IngredientUUID(UUID.randomUUID()),

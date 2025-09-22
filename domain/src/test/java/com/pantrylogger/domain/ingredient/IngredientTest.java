@@ -49,5 +49,4 @@ class IngredientTest {
 
         assertEquals(this.ingredient, other);
     }
-
 }

@@ -1,9 +1,7 @@
 package com.pantrylogger.restapi.ingredient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 
-import com.pantrylogger.domain.exception.EntityNotFoundException;
 import com.pantrylogger.domain.ingredient.CreateIngredientCommand;
 import com.pantrylogger.domain.ingredient.CreateIngredientUseCase;
 import com.pantrylogger.domain.ingredient.DeleteIngredientUseCase;
@@ -83,17 +80,6 @@ class IngredientsControllerTest {
     }
 
     @Test
-    void findByUuidShouldReturnNotFoundIfMissing() {
-        when(this.getIngredientByUuidUseCase.getIngredientByUuid(new IngredientUUID(this.ingredientUUID)))
-                .thenThrow(EntityNotFoundException.class);
-
-        var response = this.controller.findByUuid(this.ingredientUUID);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNull(response.getBody());
-    }
-
-    @Test
     void createNewShouldReturnCreatedIngredient() {
         CreateIngredientCommand command = new CreateIngredientCommand("Sugar", "Sweet");
         Ingredient createdIngredient = new Ingredient(
@@ -105,7 +91,7 @@ class IngredientsControllerTest {
 
         var response = this.controller.createNew(command);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals("Sugar", response.getBody().name());
     }
 
@@ -133,16 +119,5 @@ class IngredientsControllerTest {
         var response = this.controller.delete(this.ingredientUUID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
-
-    @Test
-    void DeleteWithBadUuidShouldReturnNotFound() {
-        doThrow(new EntityNotFoundException("Ingredient not found"))
-                .when(this.deleteIngredientUseCase)
-                .deleteIngredient(this.ingredientUUID);
-
-        var response = this.controller.delete(this.ingredientUUID);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }

@@ -4,6 +4,18 @@ Accept: application/json
 
 ###
 
+### Create a new ingredient with too short name
+POST http://localhost:8080/ingredients
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "T",
+  "description": "Fresh red tomato"
+}
+
+###
+
 ### Create a new ingredient and capture UUID
 POST http://localhost:8080/ingredients
 Content-Type: application/json

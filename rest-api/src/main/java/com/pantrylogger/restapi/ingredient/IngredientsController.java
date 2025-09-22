@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pantrylogger.domain.exception.EntityNotFoundException;
 import com.pantrylogger.domain.ingredient.CreateIngredientCommand;
 import com.pantrylogger.domain.ingredient.CreateIngredientUseCase;
 import com.pantrylogger.domain.ingredient.DeleteIngredientUseCase;
@@ -71,22 +70,19 @@ public class IngredientsController {
         return new ResponseEntity<>(
                 new IngredientDto(this.createIngredientUseCase
                         .createIngredient(createIngredientCommand)),
-                HttpStatus.OK);
+                HttpStatus.CREATED);
+
     }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<IngredientDto> findByUuid(@PathVariable UUID uuid) {
         LOGGER.debug("Getting ingredient {}", uuid);
 
-        try {
-            return new ResponseEntity<>(
-                    new IngredientDto(
-                            this.getIngredientByUuidUseCase
-                                    .getIngredientByUuid(new IngredientUUID(uuid))),
-                    HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return new ResponseEntity<>(
+                new IngredientDto(
+                        this.getIngredientByUuidUseCase
+                                .getIngredientByUuid(new IngredientUUID(uuid))),
+                HttpStatus.OK);
     }
 
     @PatchMapping("/{uuid}")
@@ -95,15 +91,12 @@ public class IngredientsController {
             @RequestBody UpdateIngredientCommand updateIngredientCommand) {
         LOGGER.debug("updating ingredient {}", uuid);
 
-        try {
-            return new ResponseEntity<>(
-                    new IngredientDto(
-                            this.updateIngredientUseCase.updateIngredient(
-                                    uuid, updateIngredientCommand)),
-                    HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return new ResponseEntity<>(
+                new IngredientDto(
+                        this.updateIngredientUseCase.updateIngredient(
+                                uuid, updateIngredientCommand)),
+                HttpStatus.OK);
+
     }
 
     @DeleteMapping("/{uuid}")
@@ -111,17 +104,11 @@ public class IngredientsController {
             @PathVariable UUID uuid) {
         LOGGER.debug("deleting ingredient {}", uuid);
 
-        try {
-            this.deleteIngredientUseCase.deleteIngredient(uuid);
+        this.deleteIngredientUseCase.deleteIngredient(uuid);
 
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(Map.of("message", "Ingredient deleted"));
-
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Map.of("message", "Ingredient deleted"));
 
     }
-
 }
