@@ -10,3 +10,21 @@ spring:
     threads:
         virtual:
             enabled: true
+    datasource:
+        url: jdbc:postgresql://localhost:${POSTGRES_PORT}/${POSTGRES_DB}
+        username: ${POSTGRES_USER}
+        password: ${POSTGRES_PASSWORD}
+        driver-class-name: org.postgresql.Driver
+    sql:
+        init:
+            mode: never
+            platform: postgres
+
+    jpa:
+        hibernate:
+            ddl-auto: ${JPA_DDL_AUTO}
+            show-sql: ${JPA_SHOW_SQL:true}
+        properties:
+            hibernate:
+                format_sql: true
+                dialect: org.hibernate.dialect.PostgreSQLDialect

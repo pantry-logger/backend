@@ -1,8 +1,9 @@
 package com.pantrylogger.postgresadapter;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 class RecipesAdapterTest {

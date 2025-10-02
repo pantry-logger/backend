@@ -19,6 +19,7 @@ plugins {
     id("jacoco-report-aggregation")
     id("pmd")
     id("checkstyle")
+    id("eclipse")
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -58,9 +59,13 @@ allprojects {
     dependencies {
         "implementation"("org.springframework.boot:spring-boot-autoconfigure")
 
-        "testImplementation"("org.junit.jupiter:junit-jupiter:5.13.4")
 
         "testRuntimeOnly"("org.junit.platform:junit-platform-launcher")
+        "testImplementation"("org.springframework.boot:spring-boot-starter-test")
+        "testImplementation"("org.testcontainers:testcontainers:1.16.0")
+        "testImplementation"("org.testcontainers:junit-jupiter:1.16.0")
+        "testImplementation"("org.testcontainers:postgresql:1.16.0")
+        "testImplementation"(testFixtures(project(":domain")))
     }
 
     tasks.named<Test>("test") {
