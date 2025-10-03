@@ -1,3 +1,7 @@
+### Nix Stuff ###
+.direnv
+.direnv/*
+
 # Created by https://www.toptal.com/developers/gitignore/api/java,gradle,eclipse,git
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,gradle,eclipse,git
 
