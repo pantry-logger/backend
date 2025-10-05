@@ -1,3 +1,9 @@
+### env fles ###
+.env
+
+### Mprocs ###
+mprocs.yaml
+
 ### Nix Stuff ###
 .direnv
 .direnv/*
