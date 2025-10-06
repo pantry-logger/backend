@@ -4,5 +4,5 @@ public enum IngredientAmountUnit {
     GRAM,
     MILLIGRAM,
     KILOGRAM,
-    INDIVIDUAL,
+    INDIVIDUAL
 }

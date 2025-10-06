@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
-import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
 import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
+import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
 
 @Component
 public class DeleteRecipeUseCase {

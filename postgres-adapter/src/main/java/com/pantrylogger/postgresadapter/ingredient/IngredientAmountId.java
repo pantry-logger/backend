@@ -1,9 +1,10 @@
 package com.pantrylogger.postgresadapter.ingredient;
 
-import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
+
+import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class IngredientAmountId implements Serializable {

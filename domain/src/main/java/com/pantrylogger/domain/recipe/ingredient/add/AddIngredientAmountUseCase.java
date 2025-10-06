@@ -3,6 +3,7 @@ package com.pantrylogger.domain.recipe.ingredient.add;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -12,8 +13,6 @@ import com.pantrylogger.domain.ingredient.IngredientRepositoryPort;
 import com.pantrylogger.domain.recipe.Recipe;
 import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
 import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
-
-import jakarta.validation.Valid;
 
 @Service
 @Validated

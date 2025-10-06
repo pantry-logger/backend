@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pantrylogger.domain.recipe.Recipe;
+import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
 import com.pantrylogger.domain.recipe.RecipeInstruction;
 import com.pantrylogger.domain.recipe.RecipeInstruction.RecipeInstructionUUID;
-import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;;
 
 public class RecipeFixture {
 

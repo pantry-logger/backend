@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,12 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pantrylogger.domain.IngredientFixture;
 import com.pantrylogger.domain.RecipeFixture;
 import com.pantrylogger.domain.ingredient.Ingredient;
+import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.ingredient.IngredientAmountUnit;
 import com.pantrylogger.domain.ingredient.IngredientRepositoryPort;
-import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.recipe.Recipe;
 import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
 import com.pantrylogger.domain.recipe.ingredient.add.AddIngredientAmountCommand;
@@ -62,6 +62,8 @@ class RecipeIngredientsIntegrationTest {
 
     private String message = "$.message";
     private String recipesEndPoint = "/recipes";
+    private String ingredientsEndPoint = "/ingredients";
+    private String positionEndpoint = "/position";
 
     @DynamicPropertySource
     static void configure(DynamicPropertyRegistry registry) {
@@ -91,7 +93,7 @@ class RecipeIngredientsIntegrationTest {
                 100,
                 IngredientAmountUnit.GRAM);
 
-        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + "/ingredients")
+        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
@@ -109,7 +111,7 @@ class RecipeIngredientsIntegrationTest {
         AddIngredientAmountCommand command = new AddIngredientAmountCommand(
                 null, 0, null);
 
-        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + "/ingredients")
+        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -123,7 +125,7 @@ class RecipeIngredientsIntegrationTest {
         AddIngredientAmountCommand command = new AddIngredientAmountCommand(
                 null, 500, IngredientAmountUnit.GRAM);
 
-        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + "/ingredients")
+        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -137,7 +139,7 @@ class RecipeIngredientsIntegrationTest {
         AddIngredientAmountCommand command = new AddIngredientAmountCommand(
                 IngredientFixture.parmesan().getUuid(), 500, null);
 
-        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + "/ingredients")
+        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + this.ingredientsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -153,7 +155,7 @@ class RecipeIngredientsIntegrationTest {
                 1,
                 IngredientAmountUnit.KILOGRAM);
 
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + "/ingredients/" + ingredientUuid)
+        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + this.ingredientsEndPoint + "/" + ingredientUuid)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk())
@@ -171,7 +173,7 @@ class RecipeIngredientsIntegrationTest {
                 0,
                 null);
 
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + "/ingredients/" + ingredientUuid)
+        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + this.ingredientsEndPoint + "/" + ingredientUuid)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -187,7 +189,7 @@ class RecipeIngredientsIntegrationTest {
                 1,
                 null);
 
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + "/ingredients/" + ingredientUuid)
+        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + this.ingredientsEndPoint + "/" + ingredientUuid)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -206,7 +208,7 @@ class RecipeIngredientsIntegrationTest {
                 0,
                 IngredientAmountUnit.GRAM);
 
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + "/ingredients/" + ingredientUuid)
+        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + this.ingredientsEndPoint + "/" + ingredientUuid)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -221,7 +223,7 @@ class RecipeIngredientsIntegrationTest {
         AddIngredientAmountCommand command = new AddIngredientAmountCommand(
                 null, 500, IngredientAmountUnit.GRAM);
 
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + "/ingredients/" + badIngredientUuid)
+        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + this.ingredientsEndPoint + "/" + badIngredientUuid)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isNotFound())
@@ -241,8 +243,8 @@ class RecipeIngredientsIntegrationTest {
 
         mockMvc.perform(patch(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithIngredients.getUuid().uuid().toString() + "/ingredients/" +
-                        ingredient.getUuid().uuid().toString() + "/position")
+                        this.recipeWithIngredients.getUuid().uuid().toString() + this.ingredientsEndPoint + "/" +
+                        ingredient.getUuid().uuid().toString() + this.positionEndpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk())
@@ -269,8 +271,8 @@ class RecipeIngredientsIntegrationTest {
 
         mockMvc.perform(patch(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithIngredients.getUuid().uuid().toString() + "/ingredients/" +
-                        ingredient.getUuid().uuid().toString() + "/position")
+                        this.recipeWithIngredients.getUuid().uuid().toString() + this.ingredientsEndPoint + "/" +
+                        ingredient.getUuid().uuid().toString() + this.positionEndpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk())
@@ -294,8 +296,8 @@ class RecipeIngredientsIntegrationTest {
 
         mockMvc.perform(patch(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithIngredients.getUuid().uuid().toString() + "/ingredients/" +
-                        ingredient.getUuid().uuid().toString() + "/position")
+                        this.recipeWithIngredients.getUuid().uuid().toString() + this.ingredientsEndPoint + "/" +
+                        ingredient.getUuid().uuid().toString() + this.positionEndpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -313,8 +315,8 @@ class RecipeIngredientsIntegrationTest {
 
         mockMvc.perform(patch(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithIngredients.getUuid().uuid().toString() + "/ingredients/" +
-                        ingredient.getUuid().uuid().toString() + "/position")
+                        this.recipeWithIngredients.getUuid().uuid().toString() + this.ingredientsEndPoint + "/" +
+                        ingredient.getUuid().uuid().toString() + this.positionEndpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -332,8 +334,8 @@ class RecipeIngredientsIntegrationTest {
 
         mockMvc.perform(patch(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithIngredients.getUuid().uuid().toString() + "/ingredients/" +
-                        badIngredientUuid.uuid().toString() + "/position")
+                        this.recipeWithIngredients.getUuid().uuid().toString() + this.ingredientsEndPoint + "/" +
+                        badIngredientUuid.uuid().toString() + this.positionEndpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isNotFound())
@@ -346,7 +348,7 @@ class RecipeIngredientsIntegrationTest {
         Ingredient ingredient = this.recipeWithIngredients.getIngredients().get(1).getIngredient();
         mockMvc.perform(delete(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithIngredients.getUuid().uuid().toString() + "/ingredients/" +
+                        this.recipeWithIngredients.getUuid().uuid().toString() + this.ingredientsEndPoint + "/" +
                         ingredient.getUuid().uuid().toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.ingredients").exists());
@@ -362,7 +364,7 @@ class RecipeIngredientsIntegrationTest {
 
         mockMvc.perform(delete(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithIngredients.getUuid().uuid().toString() + "/ingredients/" +
+                        this.recipeWithIngredients.getUuid().uuid().toString() + this.ingredientsEndPoint + "/" +
                         badIngredientUuid.uuid().toString()))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath(this.message).exists());

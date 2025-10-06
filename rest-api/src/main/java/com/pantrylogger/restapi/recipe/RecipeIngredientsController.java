@@ -34,11 +34,10 @@ public class RecipeIngredientsController {
     private final DeleteIngredientAmountUseCase deleteIngredientAmountUseCase;
 
     public RecipeIngredientsController(
-        AddIngredientAmountUseCase addIngredientAmountUseCase,
-        UpdateIngredientAmountUseCase updateIngredientAmountUseCase,
-        MoveIngredientAmountUseCase moveIngredientAmountUseCase,
-        DeleteIngredientAmountUseCase deleteIngredientAmountUseCase
-    ){
+            AddIngredientAmountUseCase addIngredientAmountUseCase,
+            UpdateIngredientAmountUseCase updateIngredientAmountUseCase,
+            MoveIngredientAmountUseCase moveIngredientAmountUseCase,
+            DeleteIngredientAmountUseCase deleteIngredientAmountUseCase) {
         this.addIngredientAmountUseCase = addIngredientAmountUseCase;
         this.updateIngredientAmountUseCase = updateIngredientAmountUseCase;
         this.moveIngredientAmountUseCase = moveIngredientAmountUseCase;
@@ -54,7 +53,9 @@ public class RecipeIngredientsController {
 
         return new ResponseEntity<>(
                 new IngredientAmountDto(
-                        this.addIngredientAmountUseCase.addIngredient(recipeUuid, addIngredientAmountCommand)),
+                        this.addIngredientAmountUseCase.addIngredient(
+                                recipeUuid,
+                                addIngredientAmountCommand)),
                 HttpStatus.CREATED);
     }
 

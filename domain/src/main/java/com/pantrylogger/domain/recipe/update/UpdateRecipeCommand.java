@@ -6,8 +6,8 @@ import jakarta.validation.constraints.Size;
 
 public record UpdateRecipeCommand(
         @NotNull
-        @NotBlank 
-        @Size(min = 5, max = 50, message = "Recipe Name must be between 5 and 50 characters") 
+        @NotBlank
+        @Size(min = 5, max = 50, message = "Recipe Name must be between 5 and 50 characters")
         String name,
 
         @NotNull String description) {

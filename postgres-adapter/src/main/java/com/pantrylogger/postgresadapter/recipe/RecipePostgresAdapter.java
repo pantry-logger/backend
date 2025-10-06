@@ -7,9 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.pantrylogger.domain.exception.EntityNotFoundException;
 import com.pantrylogger.domain.recipe.Recipe;
-import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
 import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
-
+import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
 
 @Service
 public class RecipePostgresAdapter implements RecipeRepositoryPort {

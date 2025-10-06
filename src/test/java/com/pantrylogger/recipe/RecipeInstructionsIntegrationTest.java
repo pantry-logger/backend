@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pantrylogger.domain.RecipeFixture;
 import com.pantrylogger.domain.recipe.Recipe;
 import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
@@ -56,6 +55,8 @@ class RecipeIntegrationTest {
 
     private String message = "$.message";
     private String recipesEndPoint = "/recipes";
+    private String instructionsEndPoint = "/instructions";
+    private String positionEndpoint = "/position";
 
     @DynamicPropertySource
     static void configure(DynamicPropertyRegistry registry) {
@@ -79,7 +80,7 @@ class RecipeIntegrationTest {
         AddRecipeInstructionCommand command = new AddRecipeInstructionCommand(
                 RecipeFixture.newInstruction().getInstruction());
 
-        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + "/instructions")
+        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + this.instructionsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
@@ -97,7 +98,7 @@ class RecipeIntegrationTest {
         AddRecipeInstructionCommand command = new AddRecipeInstructionCommand(
                 null);
 
-        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + "/instructions")
+        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + this.instructionsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -111,7 +112,7 @@ class RecipeIntegrationTest {
         AddRecipeInstructionCommand command = new AddRecipeInstructionCommand(
                 "");
 
-        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + "/instructions")
+        mockMvc.perform(post(this.recipesEndPoint + "/" + recipeUuid + this.instructionsEndPoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -126,7 +127,7 @@ class RecipeIntegrationTest {
 
         mockMvc.perform(patch(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithInstructions.getUuid().uuid().toString() + "/instructions/" +
+                        this.recipeWithInstructions.getUuid().uuid().toString() + this.instructionsEndPoint + "/" +
                         this.recipeWithInstructions.getInstructions().get(2).getUuid().uuid())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
@@ -145,7 +146,7 @@ class RecipeIntegrationTest {
         AddRecipeInstructionCommand command = new AddRecipeInstructionCommand(
                 null);
 
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + "/instructions/" +
+        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + this.instructionsEndPoint + "/" +
                 this.recipeWithInstructions.getInstructions().get(2).getUuid().uuid())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
@@ -160,7 +161,7 @@ class RecipeIntegrationTest {
         AddRecipeInstructionCommand command = new AddRecipeInstructionCommand(
                 "");
 
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + "/instructions/" +
+        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + this.instructionsEndPoint + "/" +
                 this.recipeWithInstructions.getInstructions().get(2).getUuid().uuid())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
@@ -178,14 +179,14 @@ class RecipeIntegrationTest {
 
         mockMvc.perform(patch(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithInstructions.getUuid().uuid().toString() + "/instructions/" +
-                        this.recipeWithInstructions.getInstructions().get(fromPos).getUuid().uuid() + "/position")
+                        this.recipeWithInstructions.getUuid().uuid().toString() + this.instructionsEndPoint + "/" +
+                        this.recipeWithInstructions.getInstructions().get(fromPos).getUuid().uuid() + this.positionEndpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.instructions").exists());
 
-        MvcResult result = mockMvc
+        mockMvc
                 .perform(get(this.recipesEndPoint + "/" + this.recipeWithInstructions.getUuid().uuid()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.instructions[" + toPos + "].instruction").value(instruction))
@@ -203,9 +204,9 @@ class RecipeIntegrationTest {
 
         mockMvc.perform(patch(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithInstructions.getUuid().uuid().toString() + "/instructions/" +
+                        this.recipeWithInstructions.getUuid().uuid().toString() + this.instructionsEndPoint + "/" +
                         this.recipeWithInstructions.getInstructions().get(fromPos).getUuid().uuid() +
-                        "/position")
+                        this.positionEndpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk())
@@ -226,8 +227,8 @@ class RecipeIntegrationTest {
 
         mockMvc.perform(patch(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithInstructions.getUuid().uuid().toString() + "/instructions/" +
-                        this.recipeWithInstructions.getInstructions().get(fromPos).getUuid().uuid() + "/position")
+                        this.recipeWithInstructions.getUuid().uuid().toString() + this.instructionsEndPoint + "/" +
+                        this.recipeWithInstructions.getInstructions().get(fromPos).getUuid().uuid() + this.positionEndpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -243,8 +244,8 @@ class RecipeIntegrationTest {
 
         mockMvc.perform(patch(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithInstructions.getUuid().uuid().toString() + "/instructions/" +
-                        RecipeFixture.badUuid().uuid() + "/position")
+                        this.recipeWithInstructions.getUuid().uuid().toString() + this.instructionsEndPoint + "/" +
+                        RecipeFixture.badUuid().uuid() + this.positionEndpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isNotFound())
@@ -261,8 +262,8 @@ class RecipeIntegrationTest {
 
         mockMvc.perform(patch(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithInstructions.getUuid().uuid().toString() + "/instructions/" +
-                        this.recipeWithInstructions.getInstructions().get(fromPos).getUuid().uuid() + "/position")
+                        this.recipeWithInstructions.getUuid().uuid().toString() + this.instructionsEndPoint + "/" +
+                        this.recipeWithInstructions.getInstructions().get(fromPos).getUuid().uuid() + this.positionEndpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
@@ -276,7 +277,7 @@ class RecipeIntegrationTest {
 
         mockMvc.perform(delete(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithInstructions.getUuid().uuid().toString() + "/instructions/" +
+                        this.recipeWithInstructions.getUuid().uuid().toString() + this.instructionsEndPoint + "/" +
                         this.recipeWithInstructions.getInstructions().get(1).getUuid().uuid()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.instructions").exists());
@@ -290,7 +291,7 @@ class RecipeIntegrationTest {
     void testDeleteRecipeInstructionShouldFailInstructionNotFound() throws Exception {
         mockMvc.perform(delete(
                 this.recipesEndPoint + "/" +
-                        this.recipeWithInstructions.getUuid().uuid().toString() + "/instructions/" +
+                        this.recipeWithInstructions.getUuid().uuid().toString() + this.instructionsEndPoint + "/" +
                         RecipeFixture.badUuid().uuid()))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath(this.message).exists());

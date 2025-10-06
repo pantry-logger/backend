@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.pantrylogger.domain.ingredient.IngredientAmount;
-import com.pantrylogger.domain.recipe.Recipe;
-import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
-import com.pantrylogger.postgresadapter.ingredient.IngredientAmountJpaEntity;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
+
+import com.pantrylogger.domain.ingredient.IngredientAmount;
+import com.pantrylogger.domain.recipe.Recipe;
+import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
+import com.pantrylogger.postgresadapter.ingredient.IngredientAmountJpaEntity;
 
 @Entity
 public class RecipeJpaEntity {

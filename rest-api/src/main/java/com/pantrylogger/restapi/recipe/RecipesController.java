@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
 import com.pantrylogger.domain.recipe.create.CreateRecipeCommand;
 import com.pantrylogger.domain.recipe.create.CreateRecipeUseCase;
 import com.pantrylogger.domain.recipe.delete.DeleteRecipeUseCase;
@@ -24,7 +25,6 @@ import com.pantrylogger.domain.recipe.get.GetAllRecipesUseCase;
 import com.pantrylogger.domain.recipe.get.GetRecipeByUuidUseCase;
 import com.pantrylogger.domain.recipe.update.UpdateRecipeCommand;
 import com.pantrylogger.domain.recipe.update.UpdateRecipeUseCase;
-import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
 
 @RestController
 @RequestMapping("recipes")

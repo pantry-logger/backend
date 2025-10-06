@@ -2,6 +2,7 @@ package com.pantrylogger.domain.recipe.ingredient.move;
 
 import java.util.UUID;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -9,8 +10,6 @@ import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.recipe.Recipe;
 import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
 import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
-
-import jakarta.validation.Valid;
 
 @Service
 @Validated

@@ -1,9 +1,9 @@
 package com.pantrylogger.domain;
 
 import com.pantrylogger.domain.ingredient.Ingredient;
+import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.ingredient.IngredientAmount;
 import com.pantrylogger.domain.ingredient.IngredientAmountUnit;
-import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 
 public class IngredientFixture {
 

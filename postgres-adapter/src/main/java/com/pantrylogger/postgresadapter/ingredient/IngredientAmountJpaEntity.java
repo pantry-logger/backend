@@ -1,15 +1,15 @@
 package com.pantrylogger.postgresadapter.ingredient;
 
-import com.pantrylogger.domain.ingredient.IngredientAmount;
-import com.pantrylogger.domain.ingredient.IngredientAmountUnit;
-import com.pantrylogger.postgresadapter.recipe.RecipeJpaEntity;
-
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+
+import com.pantrylogger.domain.ingredient.IngredientAmount;
+import com.pantrylogger.domain.ingredient.IngredientAmountUnit;
+import com.pantrylogger.postgresadapter.recipe.RecipeJpaEntity;
 
 @Entity
 public class IngredientAmountJpaEntity {
