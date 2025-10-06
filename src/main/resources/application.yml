@@ -11,9 +11,9 @@ spring:
         virtual:
             enabled: true
     datasource:
-        url: jdbc:postgresql://localhost:${POSTGRES_PORT}/${POSTGRES_DB}
-        username: ${POSTGRES_USER}
-        password: ${POSTGRES_PASSWORD}
+        url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDB}
+        username: ${PGUSER}
+        password: ${PGPASSWORD}
         driver-class-name: org.postgresql.Driver
     sql:
         init:
