@@ -25,7 +25,7 @@ public record VolumeAmount(int milliliters) {
             throw new AmountConversionException("density must be positive");
         }
 
-        return WeightAmount.fromGrams(asMilliliters() * densityMgPerMl);
+        return WeightAmount.fromMilligrams(asMilliliters() * densityMgPerMl);
     }
 
 }
