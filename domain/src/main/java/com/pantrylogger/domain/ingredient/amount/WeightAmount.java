@@ -16,7 +16,7 @@ public record WeightAmount(int milliGrams) {
         return new WeightAmount(mg);
     }
 
-    public double asKg() {
+    public double asKilograms() {
         return milliGrams / 1_000_000.0;
     }
 
