@@ -147,7 +147,7 @@ class RecipeIngredientsIntegrationTest {
     }
 
     @Test
-    void testUpdateIngredientAmountShouldAddIngredient() throws Exception {
+    void testUpdateIngredientAmountShouldUpdateIngredient() throws Exception {
         UUID recipeUuid = recipeWithIngredients.getUuid().uuid();
         UUID ingredientUuid = recipeWithIngredients.getIngredients().get(0).getIngredient().getUuid().uuid();
 
@@ -160,8 +160,8 @@ class RecipeIngredientsIntegrationTest {
                 .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.ingredient").exists())
-                .andExpect(jsonPath("$.amount").value(1))
-                .andExpect(jsonPath("$.unit").value("KILOGRAM"));
+                .andExpect(jsonPath("$.amount").value(1_000_000))
+                .andExpect(jsonPath("$.unit").value("MILLIGRAM"));
     }
 
     @Test
@@ -223,9 +223,10 @@ class RecipeIngredientsIntegrationTest {
         AddIngredientAmountCommand command = new AddIngredientAmountCommand(
                 null, 500, IngredientAmountUnit.GRAM);
 
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + recipeUuid + this.ingredientsEndPoint + "/" + badIngredientUuid)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(command)))
+        mockMvc.perform(
+                patch(this.recipesEndPoint + "/" + recipeUuid + this.ingredientsEndPoint + "/" + badIngredientUuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath(this.message).exists());
     }

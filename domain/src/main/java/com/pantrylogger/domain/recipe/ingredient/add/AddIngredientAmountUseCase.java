@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import com.pantrylogger.domain.ingredient.Ingredient;
 import com.pantrylogger.domain.ingredient.IngredientAmount;
 import com.pantrylogger.domain.ingredient.IngredientRepositoryPort;
+import com.pantrylogger.domain.ingredient.amount.Amount;
 import com.pantrylogger.domain.recipe.Recipe;
 import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
 import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
@@ -32,10 +33,12 @@ public class AddIngredientAmountUseCase {
             @Valid AddIngredientAmountCommand addIngredientAmountCommand) {
         Recipe recipe = this.recipeRepository.getByUUID(new RecipeUUID(recipeUuid));
         Ingredient ingredient = this.ingredientRepository.getByUUID(addIngredientAmountCommand.ingredientUUID());
-        recipe.addIngredient(new IngredientAmount(
-                ingredient,
-                addIngredientAmountCommand.amount(),
-                addIngredientAmountCommand.unit()));
+        recipe.addIngredient(
+                new IngredientAmount(
+                        ingredient,
+                        Amount.of(
+                                addIngredientAmountCommand.amount(),
+                                addIngredientAmountCommand.unit())));
 
         recipe = recipeRepository.save(recipe);
 

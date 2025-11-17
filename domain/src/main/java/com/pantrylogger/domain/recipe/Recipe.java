@@ -8,7 +8,7 @@ import com.pantrylogger.domain.exception.EntityMoveOutOfBoundsException;
 import com.pantrylogger.domain.exception.EntityNotFoundException;
 import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.ingredient.IngredientAmount;
-import com.pantrylogger.domain.ingredient.IngredientAmountUnit;
+import com.pantrylogger.domain.ingredient.amount.Amount;
 import com.pantrylogger.domain.recipe.RecipeInstruction.RecipeInstructionUUID;
 
 public class Recipe {
@@ -71,7 +71,7 @@ public class Recipe {
             throw new EntityMoveOutOfBoundsException("Invalid position to move to");
         }
         IngredientAmount ingredientToMove = this.ingredients.stream()
-                .filter(ingredient -> ingredient.getIngredient().getUuid().uuid().equals(ingredientUUID.uuid()))
+                .filter(ia -> ia.getIngredient().equals(ingredientUUID))
                 .findAny()
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Recipe Ingredient with UUID %s not found on Recipe %s",
@@ -86,21 +86,19 @@ public class Recipe {
 
     public void updateIngredientAmount(
             IngredientUUID ingredientUuid,
-            int amount,
-            IngredientAmountUnit unit) {
+            Amount amount) {
         IngredientAmount ingredientAmount = this.ingredients.stream()
-                .filter(ia -> ia.getIngredient().getUuid().equals(ingredientUuid))
+                .filter(ia -> ia.getIngredient().equals(ingredientUuid))
                 .findAny()
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Recipe Ingredient with UUID %s not found on Recipe %s",
                                 ingredientUuid.uuid(), this.getUuid())));
 
         ingredientAmount.setAmount(amount);
-        ingredientAmount.setUnit(unit);
     }
 
     public void deleteIngredient(IngredientUUID ingredientUuid) {
-        if (!this.ingredients.removeIf(ingredient -> ingredient.getIngredient().getUuid().equals(ingredientUuid))) {
+        if (!this.ingredients.removeIf(ia -> ia.getIngredient().equals(ingredientUuid))) {
             throw new EntityNotFoundException(
                     String.format("Recipe Ingredient with UUID %s not found on Recipe %s",
                             ingredientUuid.uuid(), this.getUuid().uuid()));

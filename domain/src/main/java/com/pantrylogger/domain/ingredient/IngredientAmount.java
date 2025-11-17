@@ -1,18 +1,17 @@
 package com.pantrylogger.domain.ingredient;
 
+import com.pantrylogger.domain.ingredient.amount.Amount;
+
 public class IngredientAmount {
 
     private Ingredient ingredient;
-    private int amount;
-    private IngredientAmountUnit unit;
+    private Amount amount;
 
     public IngredientAmount(
             Ingredient ingredient,
-            int amount,
-            IngredientAmountUnit unit) {
+            Amount amount) {
         this.ingredient = ingredient;
         this.amount = amount;
-        this.unit = unit;
     }
 
     public Ingredient getIngredient() {
@@ -23,19 +22,12 @@ public class IngredientAmount {
         this.ingredient = ingredient;
     }
 
-    public int getAmount() {
+    public Amount getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(Amount amount) {
         this.amount = amount;
     }
 
-    public IngredientAmountUnit getUnit() {
-        return unit;
-    }
-
-    public void setUnit(IngredientAmountUnit unit) {
-        this.unit = unit;
-    }
 }

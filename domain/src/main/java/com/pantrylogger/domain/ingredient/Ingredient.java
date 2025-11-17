@@ -46,17 +46,22 @@ public class Ingredient {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Ingredient)) {
-            return false;
+        if (o instanceof Ingredient) {
+            Ingredient that = (Ingredient) o;
+            return this.uuid.equals(that.getUuid());
         }
 
-        Ingredient that = (Ingredient) o;
-        return this.hashCode() == that.hashCode();
+        if (o instanceof IngredientUUID) {
+            IngredientUUID thatUuid = (IngredientUUID) o;
+            return this.uuid.equals(thatUuid);
+        }
+
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.uuid, this.name, this.description);
+        return Objects.hash(uuid);
     }
 
 }

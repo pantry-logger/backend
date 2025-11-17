@@ -24,7 +24,7 @@ public class IngredientAmountId implements Serializable {
         return recipeUuid;
     }
 
-    public void getRecipeUuid(UUID recipeUuid) {
+    public void setRecipeUuid(UUID recipeUuid) {
         this.recipeUuid = recipeUuid;
     }
 

@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 
-import com.pantrylogger.domain.ingredient.IngredientAmount;
 import com.pantrylogger.domain.recipe.Recipe;
 import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
 import com.pantrylogger.postgresadapter.ingredient.IngredientAmountJpaEntity;
@@ -26,11 +25,11 @@ public class RecipeJpaEntity {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderColumn(name = "position")
-    private List<IngredientAmountJpaEntity> ingredients;
+    private List<IngredientAmountJpaEntity> ingredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderColumn(name = "position")
-    private List<RecipeInstructionJpaEntity> instructions;
+    private List<RecipeInstructionJpaEntity> instructions = new ArrayList<>();
 
     public RecipeJpaEntity() {
     }
@@ -40,9 +39,7 @@ public class RecipeJpaEntity {
         this.name = recipe.getName();
         this.description = recipe.getDescription();
         this.ingredients = recipe.getIngredients()
-                .stream().map(ingredient -> new IngredientAmountJpaEntity(
-                        new IngredientAmount(ingredient.getIngredient(), ingredient.getAmount(), ingredient.getUnit()),
-                        this))
+                .stream().map(ia -> new IngredientAmountJpaEntity(ia, this))
                 .collect(Collectors.toCollection(ArrayList::new));
         this.instructions = recipe.getInstructions()
                 .stream().map(instr -> new RecipeInstructionJpaEntity(instr, this))

@@ -4,6 +4,7 @@ import com.pantrylogger.domain.ingredient.Ingredient;
 import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.ingredient.IngredientAmount;
 import com.pantrylogger.domain.ingredient.IngredientAmountUnit;
+import com.pantrylogger.domain.ingredient.amount.Amount;
 
 public class IngredientFixture {
 
@@ -49,21 +50,19 @@ public class IngredientFixture {
 
     private static final IngredientAmount BUTTER_AMOUNT = new IngredientAmount(
             BUTTER,
-            50,
-            IngredientAmountUnit.GRAM);
+            Amount.of(50, IngredientAmountUnit.GRAM));
+
     private static final IngredientAmount ONION_AMOUNT = new IngredientAmount(
             ONION,
-            1,
-            IngredientAmountUnit.INDIVIDUAL);
+            Amount.of(1, IngredientAmountUnit.INDIVIDUAL));
+
     private static final IngredientAmount MUSHROOMS_AMOUNT = new IngredientAmount(
             MUSHROOMS,
-            300,
-            IngredientAmountUnit.GRAM);
+            Amount.of(300, IngredientAmountUnit.GRAM));
 
     private static final IngredientAmount PARMESAN_AMOUNT = new IngredientAmount(
             PARMESAN,
-            100,
-            IngredientAmountUnit.GRAM);
+            Amount.of(100, IngredientAmountUnit.GRAM));
 
     private static final IngredientUUID GOOD_UUID = new IngredientUUID("a2bb99bf-c021-4005-b387-21c4df774568");
 
