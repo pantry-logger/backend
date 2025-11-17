@@ -71,7 +71,7 @@ public class Recipe {
             throw new EntityMoveOutOfBoundsException("Invalid position to move to");
         }
         IngredientAmount ingredientToMove = this.ingredients.stream()
-                .filter(ia -> ia.getIngredient().equals(ingredientUUID))
+                .filter(ia -> ia.getIngredient().uuidEquals(ingredientUUID))
                 .findAny()
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Recipe Ingredient with UUID %s not found on Recipe %s",
@@ -88,7 +88,7 @@ public class Recipe {
             IngredientUUID ingredientUuid,
             Amount amount) {
         IngredientAmount ingredientAmount = this.ingredients.stream()
-                .filter(ia -> ia.getIngredient().equals(ingredientUuid))
+                .filter(ia -> ia.getIngredient().uuidEquals(ingredientUuid))
                 .findAny()
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Recipe Ingredient with UUID %s not found on Recipe %s",
@@ -98,7 +98,7 @@ public class Recipe {
     }
 
     public void deleteIngredient(IngredientUUID ingredientUuid) {
-        if (!this.ingredients.removeIf(ia -> ia.getIngredient().equals(ingredientUuid))) {
+        if (!this.ingredients.removeIf(ia -> ia.getIngredient().uuidEquals(ingredientUuid))) {
             throw new EntityNotFoundException(
                     String.format("Recipe Ingredient with UUID %s not found on Recipe %s",
                             ingredientUuid.uuid(), this.getUuid().uuid()));

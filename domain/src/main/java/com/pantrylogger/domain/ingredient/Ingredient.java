@@ -41,27 +41,26 @@ public class Ingredient {
         this.description = description;
     }
 
+    public boolean uuidEquals(IngredientUUID uuid) {
+        return this.uuid.equals(uuid);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o instanceof Ingredient) {
-            Ingredient that = (Ingredient) o;
-            return this.uuid.equals(that.getUuid());
+        if (!(o instanceof Ingredient)) {
+            return false;
         }
 
-        if (o instanceof IngredientUUID) {
-            IngredientUUID thatUuid = (IngredientUUID) o;
-            return this.uuid.equals(thatUuid);
-        }
-
-        return false;
+        Ingredient that = (Ingredient) o;
+        return this.hashCode() == that.hashCode();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid);
+        return Objects.hash(this.uuid, this.name, this.description);
     }
 
 }
