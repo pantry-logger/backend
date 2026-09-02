@@ -18,9 +18,9 @@ public record IngredientAmountDto(
                     case Amount.Individual i -> i.value().asQuantity();
                 },
                 switch (ingredientAmount.getAmount()) {
-                    case Amount.Weight w -> IngredientAmountUnit.MILLIGRAM;
-                    case Amount.Volume v -> IngredientAmountUnit.MILLILITER;
-                    case Amount.Individual i -> IngredientAmountUnit.INDIVIDUAL;
+                    case Amount.Weight ignored -> IngredientAmountUnit.MILLIGRAM;
+                    case Amount.Volume ignored -> IngredientAmountUnit.MILLILITER;
+                    case Amount.Individual ignored -> IngredientAmountUnit.INDIVIDUAL;
                 });
     }
 }

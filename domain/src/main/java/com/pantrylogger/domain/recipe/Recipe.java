@@ -13,11 +13,11 @@ import com.pantrylogger.domain.recipe.RecipeInstruction.RecipeInstructionUUID;
 
 public class Recipe {
 
-    private RecipeUUID uuid;
+    private final RecipeUUID uuid;
     private String name;
     private String description;
-    private List<IngredientAmount> ingredients;
-    private List<RecipeInstruction> instructions;
+    private final List<IngredientAmount> ingredients;
+    private final List<RecipeInstruction> instructions;
 
     public record RecipeUUID(UUID uuid) {
         public RecipeUUID(String strUUID) {
@@ -77,9 +77,7 @@ public class Recipe {
                         String.format("Recipe Ingredient with UUID %s not found on Recipe %s",
                                 ingredientUUID.uuid(), this.getUuid().uuid())));
 
-        int currentPos = this.ingredients.indexOf(ingredientToMove);
-
-        this.ingredients.remove(currentPos);
+        this.ingredients.remove(ingredientToMove);
         this.ingredients.add(toPos, ingredientToMove);
 
     }
@@ -144,11 +142,10 @@ public class Recipe {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Recipe)) {
+        if (!(o instanceof Recipe that)) {
             return false;
         }
 
-        Recipe that = (Recipe) o;
         return this.hashCode() == that.hashCode();
     }
 

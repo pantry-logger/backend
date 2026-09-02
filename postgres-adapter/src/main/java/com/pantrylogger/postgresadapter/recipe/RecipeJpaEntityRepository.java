@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface RecipeJpaEntityRepository extends JpaRepository<RecipeJpaEntity, UUID> {
-    @Query("SELECT r FROM RecipeJpaEntity r LEFT JOIN FETCH r.instructions WHERE r.id = :id")
+    @Query("SELECT r FROM RecipeJpaEntity r LEFT JOIN FETCH r.instructions WHERE r.uuid = :id")
     Optional<RecipeJpaEntity> findByIdWithInstructions(@Param("id") UUID uuid);
 }
