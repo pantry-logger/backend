@@ -41,6 +41,10 @@ public class Ingredient {
         this.description = description;
     }
 
+    public boolean uuidEquals(IngredientUUID uuid) {
+        return this.uuid.equals(uuid);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

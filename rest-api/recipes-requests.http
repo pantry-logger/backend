@@ -1,0 +1,95 @@
+### Get all recipes
+GET http://localhost:8080/recipes
+Accept: application/json
+
+###
+
+### Create a new recipe with too short name
+POST http://localhost:8080/recipes
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "T",
+  "description": "Spicy Tomato pasta sauce"
+}
+
+###
+
+### Create a new recipe and capture UUID
+POST http://localhost:8080/recipes
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Pasta Arrabiata",
+  "description": "Spicy Tomato pasta sauce"
+}
+
+> {% client.global.set("recipeUuid", response.body.uuid) %}
+
+###
+
+### Get all recipes
+GET http://localhost:8080/recipes
+Accept: application/json
+
+###
+
+### Get recipe by UUID (captured from POST)
+GET http://localhost:8080/recipes/{{recipeUuid}}
+Accept: application/json
+
+###
+
+### Update recipe by UUID (captured from POST)
+PATCH http://localhost:8080/recipes/{{recipeUuid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Cherry Tomato",
+  "description": "Small sweet tomato"
+}
+
+### Get recipe by UUID after Patch (captured from POST)
+GET http://localhost:8080/recipes/{{recipeUuid}}
+Accept: application/json
+
+###
+
+### Post Add Instruction to recipe by UUID after Patch (captured from POST)
+POST http://localhost:8080/recipes/{{recipeUuid}}/instructions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "instruction": "Season to taste"
+}
+
+###
+
+### Get recipe by UUID after Added Instruction
+GET http://localhost:8080/recipes/{{recipeUuid}}
+Accept: application/json
+
+> {% client.global.set("recipeInstructionUuid", response.body.instructions[0].uuid) %}
+
+###
+
+### Patch recipe Instruction by UUID after Added Instruction
+PATCH http://localhost:8080/recipes/{{recipeUuid}}/instructions/{{recipeInstructionUuid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "instruction": "Salt and Pepper to taste"
+}
+
+###
+
+### Delete recipe by UUID after Patch (captured from POST)
+# DELETE http://localhost:8080/recipes/{{recipeUuid}}
+# Accept: application/json
+
+###

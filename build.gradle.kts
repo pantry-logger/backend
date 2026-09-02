@@ -19,7 +19,6 @@ plugins {
     id("jacoco-report-aggregation")
     id("pmd")
     id("checkstyle")
-    id("eclipse")
 }
 
 version = "0.0.1-SNAPSHOT"

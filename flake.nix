@@ -52,7 +52,9 @@
               ncurses
               patchelf
               zlib
+              postgresql
               ijhttp
+              mprocs
             ];
 
             shellHook =
