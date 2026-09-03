@@ -38,10 +38,12 @@ public class IngredientAmountJpaEntity {
     @SuppressWarnings("PMD.SwitchDensity")
     public IngredientAmountJpaEntity(
             IngredientAmount ingredientAmount,
-            RecipeJpaEntity recipeJpaEntity) {
+            RecipeJpaEntity recipeJpaEntity
+    ) {
         this.id = new IngredientAmountId(
                 recipeJpaEntity.getUuid(),
-                ingredientAmount.getIngredient().getUuid().uuid());
+                ingredientAmount.getIngredient().getUuid().uuid()
+        );
         this.ingredient = new IngredientJpaEntity(ingredientAmount.getIngredient());
 
         switch (ingredientAmount.getAmount()) {
@@ -57,9 +59,8 @@ public class IngredientAmountJpaEntity {
                 this.amount = i.value().asQuantity();
                 this.type = AmountType.INDIVIDUAL;
             }
-            default ->
-                throw new IllegalArgumentException(
-                        "Unknown IngredientAmountEntity subclass: " + ingredientAmount.getAmount());
+            default -> throw new IllegalArgumentException(
+                    "Unknown IngredientAmountEntity subclass: " + ingredientAmount.getAmount());
 
         }
         this.recipe = recipeJpaEntity;
@@ -83,21 +84,20 @@ public class IngredientAmountJpaEntity {
 
     public IngredientAmount toIngredientAmount() {
         return switch (this.getType()) {
-            case WEIGHT ->
-                new IngredientAmount(this.getIngredient().toIngredient(),
-                        new Amount.Weight(
-                                WeightAmount.fromMilligrams(this.getAmount())));
-            case VOLUME ->
-                new IngredientAmount(this.getIngredient().toIngredient(),
-                        new Amount.Volume(
-                                VolumeAmount.fromMilliliters(this.getAmount())));
-            case INDIVIDUAL ->
-                new IngredientAmount(this.getIngredient().toIngredient(),
-                        new Amount.Individual(
-                                IndividualAmount.of(this.getAmount())));
-            default ->
-                throw new IllegalArgumentException(
-                        "Unknown IngredientAmountEntity subclass: " + this.getClass());
+            case WEIGHT -> new IngredientAmount(
+                    this.getIngredient().toIngredient(),
+                    new Amount.Weight(WeightAmount.fromMilligrams(this.getAmount()))
+            );
+            case VOLUME -> new IngredientAmount(
+                    this.getIngredient().toIngredient(),
+                    new Amount.Volume(VolumeAmount.fromMilliliters(this.getAmount()))
+            );
+            case INDIVIDUAL -> new IngredientAmount(
+                    this.getIngredient().toIngredient(),
+                    new Amount.Individual(IndividualAmount.of(this.getAmount()))
+            );
+            default -> throw new IllegalArgumentException(
+                    "Unknown IngredientAmountEntity subclass: " + this.getClass());
         };
     }
 
