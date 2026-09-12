@@ -1,7 +1,5 @@
 package com.pantrylogger.domain.ingredient;
 
-import java.util.UUID;
-
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -14,15 +12,17 @@ public class UpdateIngredientUseCase {
     private final IngredientRepositoryPort ingredientRepository;
 
     public UpdateIngredientUseCase(
-            IngredientRepositoryPort ingredientRepository) {
+            IngredientRepositoryPort ingredientRepository
+    ) {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public Ingredient updateIngredient(
-            UUID uuid,
-            @Valid UpdateIngredientCommand updateIngredientCommand) {
-
-        Ingredient ingredient = this.ingredientRepository.getByUUID(new IngredientUUID(uuid));
+    public Ingredient execute(
+            IngredientUUID ingredientUUID,
+            @Valid UpdateIngredientCommand updateIngredientCommand
+    ) {
+        Ingredient ingredient = this.ingredientRepository.getByUUID(
+                ingredientUUID);
         ingredient.setName(updateIngredientCommand.name());
         ingredient.setDescription(updateIngredientCommand.description());
         return this.ingredientRepository.save(ingredient);

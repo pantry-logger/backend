@@ -4,7 +4,7 @@
         name="Argenta Digital PMD Ruleset"
         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+        xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description/>
 
@@ -14,14 +14,14 @@
         <exclude name="AccessorMethodGeneration"/>
         <exclude name="AvoidUsingHardCodedIP"/>
         <exclude name="GuardLogStatement"/>
-        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
-        <exclude name="JUnitTestContainsTooManyAsserts"/>
-        <exclude name="JUnitTestsShouldIncludeAssert"/>
+        <exclude name="UnitTestAssertionsShouldIncludeMessage"/>
+        <exclude name="UnitTestContainsTooManyAsserts"/>
+        <exclude name="UnitTestShouldIncludeAssert"/>
         <exclude name="LooseCoupling"/>
     </rule>
 
     <!-- Disabled during migration to Java 21 and PMD 7.0.0-rc4 due to false positives. -->
-    <!--rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts">
+    <!--rule ref="category/java/bestpractices.xml/UnitTestContainsTooManyAsserts">
         <properties>
             <property name="maximumAsserts" value="5"/>
         </properties>
@@ -29,7 +29,8 @@
 
     <rule ref="category/java/bestpractices.xml/LooseCoupling">
         <properties>
-            <property name="allowedTypes" value="java.util.Properties,org.springframework.http.HttpHeaders,org.springframework.ui.ModelMap" />
+            <property name="allowedTypes"
+                      value="java.util.Properties,org.springframework.http.HttpHeaders,org.springframework.ui.ModelMap"/>
         </properties>
     </rule>
 
@@ -55,7 +56,8 @@
 
     <rule ref="category/java/codestyle.xml/ClassNamingConventions">
         <properties>
-            <property name="testClassPattern" value="^.*IT$|^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$" />
+            <property name="testClassPattern"
+                      value="^.*IT$|^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$"/>
             <property name="utilityClassPattern" value="[A-Z][a-zA-Z]+"/>
         </properties>
     </rule>
@@ -83,12 +85,12 @@
         <exclude name="SimplifyBooleanReturns"/>
         <exclude name="TooManyFields"/>
         <exclude name="TooManyMethods"/>
-        <exclude name="UseUtilityClass"/>
+        <exclude name="InstantiableUtilityClass"/>
     </rule>
 
     <rule ref="category/java/design.xml/CouplingBetweenObjects">
         <properties>
-            <property name="threshold" value="40" />
+            <property name="threshold" value="40"/>
         </properties>
     </rule>
 

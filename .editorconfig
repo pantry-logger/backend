@@ -13,3 +13,30 @@ ij_formatter_tags_enabled = true
 ij_smart_tabs = false
 ij_visual_guides =
 ij_wrap_on_typing = false
+ij_java_method_parameters_wrap = on_every_item
+ij_java_method_parameters_new_line_after_left_paren = true
+ij_java_method_parameters_right_paren_on_new_line = true
+ij_java_call_parameters_wrap = on_every_item
+ij_java_call_parameters_new_line_after_left_paren = true
+ij_java_call_parameters_right_paren_on_new_line = true
+ij_java_align_multiline_parameters = true
+
+ij_java_imports_layout = $*, |, java.**, |, *, |, com.pantrylogger.**
+ij_java_layout_static_imports_separately = true
+ij_java_class_count_to_use_import_on_demand = 999
+ij_java_names_count_to_use_import_on_demand = 999
+
+ij_java_keep_blank_lines_in_code = 1
+ij_java_keep_blank_lines_in_declarations = 1
+ij_java_keep_blank_lines_before_right_brace = 1
+ij_java_keep_blank_lines_between_package_declaration_and_header = 1
+
+ij_any_spaces_around_assignment_operators = true
+ij_any_spaces_around_logical_operators = true
+ij_any_spaces_around_relational_operators = true
+ij_any_spaces_around_equality_operators = true
+ij_any_spaces_around_bitwise_operators = true
+ij_any_spaces_around_additive_operators = true
+ij_any_spaces_around_multiplicative_operators = true
+ij_any_spaces_around_shift_operators = true
+ij_any_spaces_around_unary_operator = false

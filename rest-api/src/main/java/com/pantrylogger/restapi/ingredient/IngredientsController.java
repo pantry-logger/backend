@@ -1,13 +1,13 @@
 package com.pantrylogger.restapi.ingredient;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,12 +25,15 @@ import com.pantrylogger.domain.ingredient.GetIngredientByUuidUseCase;
 import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.ingredient.UpdateIngredientCommand;
 import com.pantrylogger.domain.ingredient.UpdateIngredientUseCase;
+import com.pantrylogger.restapi.SuccessResponse;
 
 @RestController
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("ingredients")
 public class IngredientsController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IngredientsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            IngredientsController.class);
     private final GetAllIngredientsUseCase getAllIngredientsUseCase;
     private final GetIngredientByUuidUseCase getIngredientByUuidUseCase;
     private final CreateIngredientUseCase createIngredientUseCase;
@@ -42,7 +45,8 @@ public class IngredientsController {
             GetIngredientByUuidUseCase getIngredientByUuidUseCase,
             CreateIngredientUseCase createIngredientUseCase,
             UpdateIngredientUseCase updateIngredientUseCase,
-            DeleteIngredientUseCase deleteIngredientUseCase) {
+            DeleteIngredientUseCase deleteIngredientUseCase
+    ) {
         this.getAllIngredientsUseCase = getAllIngredientsUseCase;
         this.getIngredientByUuidUseCase = getIngredientByUuidUseCase;
         this.createIngredientUseCase = createIngredientUseCase;
@@ -51,64 +55,76 @@ public class IngredientsController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<IngredientDto>> findAll() {
         LOGGER.debug("Getting all Ingredients");
 
         return new ResponseEntity<>(
-                this.getAllIngredientsUseCase.getAllIngredients()
+                this.getAllIngredientsUseCase.execute()
                         .stream()
                         .map(IngredientDto::new)
-                        .toList(),
-                HttpStatus.OK);
+                        .toList(), HttpStatus.OK
+        );
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<IngredientDto> createNew(
-            @RequestBody CreateIngredientCommand createIngredientCommand) {
-        LOGGER.debug("Creating new ingredient {}", createIngredientCommand.name());
+            @RequestBody CreateIngredientCommand createIngredientCommand
+    ) {
+        LOGGER.debug(
+                "Creating new ingredient {}",
+                createIngredientCommand.name()
+        );
 
         return new ResponseEntity<>(
-                new IngredientDto(this.createIngredientUseCase
-                        .createIngredient(createIngredientCommand)),
-                HttpStatus.CREATED);
+                new IngredientDto(this.createIngredientUseCase.execute(
+                        createIngredientCommand)), HttpStatus.CREATED
+        );
 
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<IngredientDto> findByUuid(@PathVariable UUID uuid) {
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<IngredientDto> findByUuid(
+            @PathVariable UUID uuid
+    ) {
         LOGGER.debug("Getting ingredient {}", uuid);
 
         return new ResponseEntity<>(
-                new IngredientDto(
-                        this.getIngredientByUuidUseCase
-                                .getIngredientByUuid(new IngredientUUID(uuid))),
-                HttpStatus.OK);
+                new IngredientDto(this.getIngredientByUuidUseCase.execute(
+                        new IngredientUUID(uuid))), HttpStatus.OK
+        );
     }
 
     @PatchMapping("/{uuid}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<IngredientDto> update(
             @PathVariable UUID uuid,
-            @RequestBody UpdateIngredientCommand updateIngredientCommand) {
+            @RequestBody UpdateIngredientCommand updateIngredientCommand
+    ) {
         LOGGER.debug("updating ingredient {}", uuid);
 
         return new ResponseEntity<>(
-                new IngredientDto(
-                        this.updateIngredientUseCase.updateIngredient(
-                                uuid, updateIngredientCommand)),
-                HttpStatus.OK);
+                new IngredientDto(this.updateIngredientUseCase.execute(
+                        new IngredientUUID(uuid),
+                        updateIngredientCommand
+                )), HttpStatus.OK
+        );
 
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<?> delete(
-            @PathVariable UUID uuid) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SuccessResponse> delete(
+            @PathVariable UUID uuid
+    ) {
         LOGGER.debug("deleting ingredient {}", uuid);
 
-        this.deleteIngredientUseCase.deleteIngredient(uuid);
+        this.deleteIngredientUseCase.execute(new IngredientUUID(uuid));
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(Map.of("message", "Ingredient deleted"));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new SuccessResponse("Ingredient deleted"));
 
     }
 }

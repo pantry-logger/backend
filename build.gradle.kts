@@ -13,9 +13,9 @@ val wiremockVersion: String by project
 
 plugins {
     id("buildlogic.java-application-conventions")
-    id("org.springframework.boot") version "4.0.0-M1"
+    id("org.springframework.boot") version "4.1.1"
     id("io.spring.dependency-management") version "1.1.7"
-    id("org.sonarqube") version "5.0.0.4638"
+    id("org.sonarqube") version "7.4.0.8496"
     id("jacoco-report-aggregation")
     id("pmd")
     id("checkstyle")
@@ -34,8 +34,15 @@ allprojects {
         mavenCentral()
     }
 
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(25))
+        }
+    }
+
     tasks.withType(JavaCompile::class) {
-        sourceCompatibility = JavaVersion.VERSION_21.toString()
+        sourceCompatibility = JavaVersion.VERSION_25.toString()
+        targetCompatibility = JavaVersion.VERSION_25.toString()
         options.compilerArgs.add("-Werror")
     }
 
@@ -45,10 +52,17 @@ allprojects {
             property("sonar.tests", "src/test")
         }
     }
-    
+
     pmd {
-        toolVersion = "7.1.0"
+        toolVersion = "7.27.0"
         isConsoleOutput = true
+    }
+
+    tasks.withType<Pmd>().configureEach {
+        javaLauncher.set(
+            project.javaToolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(25))
+            })
     }
 
     // checkstyle {
@@ -103,6 +117,8 @@ dependencies {
 
     "testImplementation"("org.springframework.boot:spring-boot-starter-web")
     "testImplementation"("org.springframework.boot:spring-boot-starter-test")
+    "testImplementation"("org.springframework.boot:spring-boot-starter-webmvc-test")
+    "testImplementation"("org.springframework.security:spring-security-test")
     "testImplementation"("org.wiremock:wiremock-jetty12:$wiremockVersion")
 }
 
@@ -152,8 +168,7 @@ sonar {
         property("sonar.sourceEncoding", "UTF-8")
         property(
             "sonar.coverage.jacoco.xmlReportPaths",
-            "build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml," +
-                    "../build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml"
+            "build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml," + "../build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml"
         )
         //property("sonar.qualitygate.wait", "true")
     }

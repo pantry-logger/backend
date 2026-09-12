@@ -1,7 +1,6 @@
 package com.pantrylogger.domain.recipe.ingredient.add;
 
 import java.util.List;
-import java.util.UUID;
 
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,9 @@ import com.pantrylogger.domain.ingredient.IngredientRepositoryPort;
 import com.pantrylogger.domain.ingredient.amount.Amount;
 import com.pantrylogger.domain.recipe.Recipe;
 import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
+import com.pantrylogger.domain.recipe.RecipeNotFoundException;
 import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
+import com.pantrylogger.domain.user.User;
 
 @Service
 @Validated
@@ -23,22 +24,35 @@ public class AddIngredientAmountUseCase {
 
     public AddIngredientAmountUseCase(
             RecipeRepositoryPort recipeRepository,
-            IngredientRepositoryPort ingredientRepository) {
+            IngredientRepositoryPort ingredientRepository
+    ) {
         this.recipeRepository = recipeRepository;
         this.ingredientRepository = ingredientRepository;
     }
 
-    public IngredientAmount addIngredient(
-            UUID recipeUuid,
-            @Valid AddIngredientAmountCommand addIngredientAmountCommand) {
-        Recipe recipe = this.recipeRepository.getByUUID(new RecipeUUID(recipeUuid));
-        Ingredient ingredient = this.ingredientRepository.getByUUID(addIngredientAmountCommand.ingredientUUID());
+    public IngredientAmount execute(
+            User user,
+            RecipeUUID recipeUuid,
+            @Valid AddIngredientAmountCommand addIngredientAmountCommand
+    ) {
+        Recipe recipe = this.recipeRepository.getByUUID(
+                        recipeUuid)
+                .orElseThrow(() -> new RecipeNotFoundException(recipeUuid));
+
+        recipe.assertModifiableBy(user);
+
+        Ingredient ingredient = this.ingredientRepository
+                .getByUUID(
+                        addIngredientAmountCommand.ingredientUUID());
+
         recipe.addIngredient(
                 new IngredientAmount(
                         ingredient,
                         Amount.of(
                                 addIngredientAmountCommand.amount(),
-                                addIngredientAmountCommand.unit())));
+                                addIngredientAmountCommand.unit()
+                        )
+                ));
 
         recipe = recipeRepository.save(recipe);
 

@@ -10,10 +10,14 @@ import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.ingredient.IngredientAmount;
 import com.pantrylogger.domain.ingredient.amount.Amount;
 import com.pantrylogger.domain.recipe.RecipeInstruction.RecipeInstructionUUID;
+import com.pantrylogger.domain.user.User;
+import com.pantrylogger.domain.user.Username;
 
 public class Recipe {
 
     private final RecipeUUID uuid;
+    private final Username owner;
+    private RecipeVisibility visibility;
     private String name;
     private String description;
     private final List<IngredientAmount> ingredients;
@@ -23,15 +27,41 @@ public class Recipe {
         public RecipeUUID(String strUUID) {
             this(UUID.fromString(strUUID));
         }
+
+        public static RecipeUUID generate() {
+            return new RecipeUUID(UUID.randomUUID());
+        }
     }
 
     public Recipe(
             RecipeUUID uuid,
+            Username owner,
+            RecipeVisibility visibility,
             String name,
             String description,
             List<IngredientAmount> ingredients,
-            List<RecipeInstruction> instructions) {
+            List<RecipeInstruction> instructions
+    ) {
         this.uuid = uuid;
+        this.owner = owner;
+        this.visibility = visibility;
+        this.name = name;
+        this.description = description;
+        this.ingredients = ingredients;
+        this.instructions = instructions;
+    }
+
+    public Recipe(
+            Username owner,
+            RecipeVisibility visibility,
+            String name,
+            String description,
+            List<IngredientAmount> ingredients,
+            List<RecipeInstruction> instructions
+    ) {
+        this.uuid = RecipeUUID.generate();
+        this.owner = owner;
+        this.visibility = visibility;
         this.name = name;
         this.description = description;
         this.ingredients = ingredients;
@@ -40,6 +70,39 @@ public class Recipe {
 
     public RecipeUUID getUuid() {
         return uuid;
+    }
+
+    public Username getOwner() {
+        return owner;
+    }
+
+    public RecipeVisibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(RecipeVisibility visibility) {
+        this.visibility = visibility;
+    }
+
+    public void assertAccessibleBy(User user) {
+        if (
+                this.getOwner().equals(user.getUsername())
+                        || this.visibility == RecipeVisibility.LINK
+                        || this.visibility == RecipeVisibility.PUBLIC) {
+            return;
+        }
+        throw new RecipeNotFoundException(this.uuid);
+    }
+
+    public void assertModifiableBy(User user) {
+        if (this.getOwner().equals(user.getUsername())) {
+            return;
+        }
+        if (this.visibility == RecipeVisibility.PRIVATE) {
+            throw new RecipeNotFoundException(this.uuid);
+        }
+
+        throw new RecipeAccessDeniedException();
     }
 
     public String getName() {
@@ -68,14 +131,17 @@ public class Recipe {
 
     public void moveIngredient(IngredientUUID ingredientUUID, int toPos) {
         if (toPos < 0 || toPos >= this.ingredients.size()) {
-            throw new EntityMoveOutOfBoundsException("Invalid position to move to");
+            throw new EntityMoveOutOfBoundsException(
+                    "Invalid position to move to");
         }
         IngredientAmount ingredientToMove = this.ingredients.stream()
                 .filter(ia -> ia.getIngredient().uuidEquals(ingredientUUID))
                 .findAny()
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Recipe Ingredient with UUID %s not found on Recipe %s",
-                                ingredientUUID.uuid(), this.getUuid().uuid())));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Recipe Ingredient with UUID %s not found on Recipe %s",
+                        ingredientUUID.uuid(),
+                        this.getUuid().uuid()
+                )));
 
         this.ingredients.remove(ingredientToMove);
         this.ingredients.add(toPos, ingredientToMove);
@@ -84,22 +150,28 @@ public class Recipe {
 
     public void updateIngredientAmount(
             IngredientUUID ingredientUuid,
-            Amount amount) {
+            Amount amount
+    ) {
         IngredientAmount ingredientAmount = this.ingredients.stream()
                 .filter(ia -> ia.getIngredient().uuidEquals(ingredientUuid))
                 .findAny()
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Recipe Ingredient with UUID %s not found on Recipe %s",
-                                ingredientUuid.uuid(), this.getUuid())));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Recipe Ingredient with UUID %s not found on Recipe %s",
+                        ingredientUuid.uuid(),
+                        this.getUuid()
+                )));
 
         ingredientAmount.setAmount(amount);
     }
 
     public void deleteIngredient(IngredientUUID ingredientUuid) {
-        if (!this.ingredients.removeIf(ia -> ia.getIngredient().uuidEquals(ingredientUuid))) {
-            throw new EntityNotFoundException(
-                    String.format("Recipe Ingredient with UUID %s not found on Recipe %s",
-                            ingredientUuid.uuid(), this.getUuid().uuid()));
+        if (!this.ingredients.removeIf(ia -> ia.getIngredient()
+                .uuidEquals(ingredientUuid))) {
+            throw new EntityNotFoundException(String.format(
+                    "Recipe Ingredient with UUID %s not found on Recipe %s",
+                    ingredientUuid.uuid(),
+                    this.getUuid().uuid()
+            ));
         }
     }
 
@@ -111,16 +183,22 @@ public class Recipe {
         this.instructions.add(instruction);
     }
 
-    public void moveInstruction(RecipeInstructionUUID recipeInstructionUuid, int toPos) {
+    public void moveInstruction(
+            RecipeInstructionUUID recipeInstructionUuid,
+            int toPos
+    ) {
         if (toPos < 0 || toPos >= this.instructions.size()) {
-            throw new EntityMoveOutOfBoundsException("Invalid position to move to");
+            throw new EntityMoveOutOfBoundsException(
+                    "Invalid position to move to");
         }
         RecipeInstruction instructionToMove = this.instructions.stream()
                 .filter(instr -> instr.getUuid().equals(recipeInstructionUuid))
                 .findAny()
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Recipe Instruction with UUID %s not found on Recipe %s",
-                                recipeInstructionUuid, this.getUuid().uuid())));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Recipe Instruction with UUID %s not found on Recipe %s",
+                        recipeInstructionUuid,
+                        this.getUuid().uuid()
+                )));
 
         int currentPos = this.instructions.indexOf(instructionToMove);
 
@@ -130,10 +208,13 @@ public class Recipe {
     }
 
     public void deleteInstruction(RecipeInstructionUUID recipeInstructionUuid) {
-        if (!instructions.removeIf(instr -> instr.getUuid().equals(recipeInstructionUuid))) {
-            throw new EntityNotFoundException(
-                    String.format("Recipe Instruction with UUID %s not found on Recipe %s",
-                            recipeInstructionUuid, this.getUuid().uuid()));
+        if (!instructions.removeIf(instr -> instr.getUuid()
+                .equals(recipeInstructionUuid))) {
+            throw new EntityNotFoundException(String.format(
+                    "Recipe Instruction with UUID %s not found on Recipe %s",
+                    recipeInstructionUuid,
+                    this.getUuid().uuid()
+            ));
         }
     }
 

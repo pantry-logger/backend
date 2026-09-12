@@ -1,7 +1,6 @@
 logging:
     level:
-        com.pantrylogger:
-            ROOT: ${LOGGING_LEVEL:TRACE}
+        com.pantrylogger: ${LOGGING_LEVEL:TRACE}
 management:
     health:
         probes:
@@ -28,3 +27,9 @@ spring:
             hibernate:
                 format_sql: true
                 dialect: org.hibernate.dialect.PostgreSQLDialect
+
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: ${KEY_CLOAK_URL}

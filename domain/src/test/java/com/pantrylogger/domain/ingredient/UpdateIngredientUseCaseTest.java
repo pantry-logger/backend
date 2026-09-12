@@ -15,31 +15,33 @@ import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 class UpdateIngredientUseCaseTest {
 
     private UpdateIngredientUseCase updateIngredientUseCase;
-    private IngredientUUID badUUID = IngredientFixture.badUUID();
+    private final IngredientUUID badUUID = IngredientFixture.badUUID();
     private IngredientUUID ingredientUUID;
     private UpdateIngredientCommand updateIngredientCommand;
-    private Ingredient expectedIngredient = IngredientFixture.updated_carrot();
+    private final Ingredient expectedIngredient = IngredientFixture.updated_carrot();
 
     @BeforeEach
     void setup() {
-        IngredientRepositoryPort mockIngredientRepository = Mockito.mock(IngredientRepositoryPort.class);
-        this.updateIngredientUseCase = new UpdateIngredientUseCase(mockIngredientRepository);
+        IngredientRepositoryPort mockIngredientRepository = Mockito.mock(
+                IngredientRepositoryPort.class);
+        this.updateIngredientUseCase = new UpdateIngredientUseCase(
+                mockIngredientRepository);
 
         var originalIngredient = IngredientFixture.carrot();
 
         this.ingredientUUID = originalIngredient.getUuid();
         this.updateIngredientCommand = new UpdateIngredientCommand(
                 IngredientFixture.updated_carrot().getName(),
-                IngredientFixture.updated_carrot().getDescription());
+                IngredientFixture.updated_carrot().getDescription()
+        );
 
-        Mockito
-                .when(mockIngredientRepository.getByUUID(this.ingredientUUID))
+        Mockito.when(mockIngredientRepository.getByUUID(this.ingredientUUID))
                 .thenReturn(originalIngredient);
 
-        doThrow(new EntityNotFoundException(
-                String.format("Ingredient with UUID %s not found", this.badUUID.uuid())))
-                .when(mockIngredientRepository)
-                .getByUUID(this.badUUID);
+        doThrow(new EntityNotFoundException(String.format(
+                "Ingredient with UUID %s not found",
+                this.badUUID.uuid()
+        ))).when(mockIngredientRepository).getByUUID(this.badUUID);
 
         Mockito.when(mockIngredientRepository.save(Mockito.any(Ingredient.class)))
                 .thenReturn(this.expectedIngredient);
@@ -47,19 +49,30 @@ class UpdateIngredientUseCaseTest {
 
     @Test
     void updateIngredientShouldSaveAndReturnUpdatedIngredient() {
-        Ingredient updatedIngredient = this.updateIngredientUseCase.updateIngredient(
-                this.ingredientUUID.uuid(),
-                this.updateIngredientCommand);
+        Ingredient updatedIngredient = this.updateIngredientUseCase.execute(
+                this.ingredientUUID,
+                this.updateIngredientCommand
+        );
 
-        assertEquals(this.expectedIngredient.getName(), updatedIngredient.getName());
-        assertEquals(this.expectedIngredient.getDescription(), updatedIngredient.getDescription());
+        assertEquals(
+                this.expectedIngredient.getName(),
+                updatedIngredient.getName()
+        );
+        assertEquals(
+                this.expectedIngredient.getDescription(),
+                updatedIngredient.getDescription()
+        );
     }
 
     @Test
     void updateIngredientByUuidWithIncorrectUUIDShouldThrowException() {
-        assertThrows(EntityNotFoundException.class, () -> {
-            this.updateIngredientUseCase
-                    .updateIngredient(this.badUUID.uuid(), this.updateIngredientCommand);
-        });
+        assertThrows(
+                EntityNotFoundException.class, () -> {
+                    this.updateIngredientUseCase.execute(
+                            this.badUUID,
+                            this.updateIngredientCommand
+                    );
+                }
+        );
     }
 }

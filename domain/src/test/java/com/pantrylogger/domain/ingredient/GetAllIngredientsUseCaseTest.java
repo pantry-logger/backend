@@ -16,12 +16,15 @@ class GetAllIngredientsUseCaseTest {
 
     private List<Ingredient> ingredients = List.of(
             IngredientFixture.carrot(),
-            IngredientFixture.tomato());
+            IngredientFixture.tomato()
+    );
 
     @BeforeEach
     void setup() {
-        IngredientRepositoryPort mockIngredientRepositoryPort = Mockito.mock(IngredientRepositoryPort.class);
-        Mockito.when(mockIngredientRepositoryPort.getAll()).thenReturn(this.ingredients);
+        IngredientRepositoryPort mockIngredientRepositoryPort = Mockito.mock(
+                IngredientRepositoryPort.class);
+        Mockito.when(mockIngredientRepositoryPort.getAll())
+                .thenReturn(this.ingredients);
 
         this.getAllIngredientsUseCase = new GetAllIngredientsUseCase(
                 mockIngredientRepositoryPort);
@@ -29,10 +32,16 @@ class GetAllIngredientsUseCaseTest {
 
     @Test
     void getAllIngredientsShouldReturn2Ingredients() {
-        var ingredients = this.getAllIngredientsUseCase.getAllIngredients();
+        var foundIngredients = this.getAllIngredientsUseCase.execute();
 
-        assertEquals(2, ingredients.size());
-        assertEquals(this.ingredients.get(0).getName(), ingredients.get(0).getName());
-        assertEquals(this.ingredients.get(1).getName(), ingredients.get(1).getName());
+        assertEquals(2, foundIngredients.size());
+        assertEquals(
+                this.ingredients.get(0).getName(),
+                foundIngredients.get(0).getName()
+        );
+        assertEquals(
+                this.ingredients.get(1).getName(),
+                foundIngredients.get(1).getName()
+        );
     }
 }

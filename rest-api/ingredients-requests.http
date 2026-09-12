@@ -1,6 +1,22 @@
+### Login
+POST http://localhost:8081/realms/pantry-logger/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = pantry-logger &
+grant_type = password &
+username = thebasikducky &
+password = testing
+
+> {%
+    client.global.set("auth_token", response.body.access_token);
+%}
+
+###
+
 ### Get all ingredients
 GET http://localhost:8080/ingredients
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 ###
 
@@ -8,10 +24,11 @@ Accept: application/json
 POST http://localhost:8080/ingredients
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 {
-  "name": "T",
-  "description": "Fresh red tomato"
+    "name": "T",
+    "description": "Fresh red tomato"
 }
 
 ###
@@ -20,25 +37,30 @@ Accept: application/json
 POST http://localhost:8080/ingredients
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 {
-  "name": "Tomato",
-  "description": "Fresh red tomato"
+    "name": "Tomato",
+    "description": "Fresh red tomato"
 }
 
-> {% client.global.set("ingredientUuid", response.body.uuid) %}
+> {%
+    client.global.set("ingredientUuid", response.body.uuid)
+%}
 
 ###
 
 ### Get all ingredients
 GET http://localhost:8080/ingredients
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 ###
 
 ### Get ingredient by UUID (captured from POST)
 GET http://localhost:8080/ingredients/{{ingredientUuid}}
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 ###
 
@@ -46,14 +68,16 @@ Accept: application/json
 PATCH http://localhost:8080/ingredients/{{ingredientUuid}}
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 {
-  "name": "Cherry Tomato",
-  "description": "Small sweet tomato"
+    "name": "Cherry Tomato",
+    "description": "Small sweet tomato"
 }
 
 ### Get ingredient by UUID after Patch (captured from POST)
 GET http://localhost:8080/ingredients/{{ingredientUuid}}
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 ###

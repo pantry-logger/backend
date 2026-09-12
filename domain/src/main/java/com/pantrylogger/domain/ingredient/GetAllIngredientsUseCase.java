@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class GetAllIngredientsUseCase {
 
-    private final IngredientRepositoryPort queryPort;
+    private final IngredientRepositoryPort ingredientRepository;
 
-    public GetAllIngredientsUseCase(IngredientRepositoryPort queryPort) {
-        this.queryPort = queryPort;
+    public GetAllIngredientsUseCase(IngredientRepositoryPort ingredientRepository) {
+        this.ingredientRepository = ingredientRepository;
     }
 
-    public List<Ingredient> getAllIngredients() {
-        return queryPort.getAll();
+    public List<Ingredient> execute() {
+        return ingredientRepository.getAll();
     }
 }

@@ -15,9 +15,10 @@ import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
 class GetAllRecipesUseCaseTest {
     private GetAllRecipesUseCase getAllRecipesUseCase;
 
-    private List<Recipe> recipes = List.of(
+    private final List<Recipe> recipes = List.of(
             RecipeFixture.emptyRecipe(),
-            RecipeFixture.anotherEmptyRecipe());
+            RecipeFixture.privateEmptyRecipe()
+    );
 
     @BeforeEach
     void setup() {
@@ -31,9 +32,10 @@ class GetAllRecipesUseCaseTest {
 
     @Test
     void getAllRecipesShouldFilterAllRecipeTwos() {
-        var recipes = this.getAllRecipesUseCase.getAllRecipes();
+        var foundRecipes = this.getAllRecipesUseCase.execute();
         assertEquals(
                 this.recipes,
-                recipes);
+                foundRecipes
+        );
     }
 }

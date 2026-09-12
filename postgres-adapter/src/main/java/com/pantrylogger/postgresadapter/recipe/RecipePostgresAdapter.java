@@ -3,12 +3,14 @@ package com.pantrylogger.postgresadapter.recipe;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.pantrylogger.domain.exception.EntityNotFoundException;
 import com.pantrylogger.domain.recipe.Recipe;
 import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
 import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
+import com.pantrylogger.domain.recipe.RecipeVisibility;
+import com.pantrylogger.domain.user.User;
 
 @Service
 public class RecipePostgresAdapter implements RecipeRepositoryPort {
@@ -21,16 +23,38 @@ public class RecipePostgresAdapter implements RecipeRepositoryPort {
 
     @Override
     public List<Recipe> getAll() {
-        return this.recipeJpaEntityRepository.findAll().stream().map(RecipeJpaEntity::toRecipe).toList();
+        return this.recipeJpaEntityRepository.findAll()
+                .stream()
+                .map(RecipeJpaEntity::toRecipe)
+                .toList();
     }
 
     @Override
-    public Recipe getByUUID(RecipeUUID uuid) {
+    public List<Recipe> getAllAccessibleBy(User user) {
+        return this.recipeJpaEntityRepository.findAllByOwnerUsernameOrVisibility(
+                        user.getUsername().toString(),
+                        RecipeVisibility.PUBLIC
+                )
+                .stream()
+                .map(RecipeJpaEntity::toRecipe)
+                .toList();
+    }
+
+    @Override
+    public List<Recipe> getAllOwnedBy(User user) {
+        return this.recipeJpaEntityRepository.findAllByOwnerUsername(
+                        user.getUsername().toString()
+                )
+                .stream()
+                .map(RecipeJpaEntity::toRecipe)
+                .toList();
+    }
+
+    @Override
+    public Optional<Recipe> getByUUID(RecipeUUID uuid) {
         return this.recipeJpaEntityRepository
                 .findByIdWithInstructions(uuid.uuid())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Recipe with UUID %s not found", uuid.uuid())))
-                .toRecipe();
+                .map(RecipeJpaEntity::toRecipe);
 
     }
 
@@ -42,18 +66,18 @@ public class RecipePostgresAdapter implements RecipeRepositoryPort {
     }
 
     @Override
-    public void delete(RecipeUUID uuid) {
-        Optional<RecipeJpaEntity> optionalRecipeJpaEntity = recipeJpaEntityRepository
-                .findByIdWithInstructions(uuid.uuid());
-
-        if (optionalRecipeJpaEntity.isEmpty()) {
-            throw new EntityNotFoundException(
-                    String.format("Recipe with UUID %s not found", uuid.uuid()));
+    public void delete(Recipe recipe) {
+        try {
+            recipeJpaEntityRepository.deleteById(recipe.getUuid().uuid());
+        } catch (EmptyResultDataAccessException e) {
+            throw new IllegalStateException(
+                    String.format(
+                            "Invariant violated: Recipe with UUID %s was expected to exist but was not found",
+                            recipe.getUuid().uuid()
+                    ),
+                    e
+            );
         }
-
-        RecipeJpaEntity recipeJpaEntity = optionalRecipeJpaEntity.get();
-
-        this.recipeJpaEntityRepository.delete(recipeJpaEntity);
     }
 
 }

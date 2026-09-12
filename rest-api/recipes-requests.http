@@ -1,6 +1,22 @@
+### Login
+POST http://localhost:8081/realms/pantry-logger/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = pantry-logger &
+grant_type = password &
+username = thebasikducky &
+password = testing
+
+> {%
+    client.global.set("auth_token", response.body.access_token);
+%}
+
+###
+
 ### Get all recipes
 GET http://localhost:8080/recipes
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 ###
 
@@ -8,10 +24,11 @@ Accept: application/json
 POST http://localhost:8080/recipes
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 {
-  "name": "T",
-  "description": "Spicy Tomato pasta sauce"
+    "name": "T",
+    "description": "Spicy Tomato pasta sauce"
 }
 
 ###
@@ -20,25 +37,30 @@ Accept: application/json
 POST http://localhost:8080/recipes
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 {
-  "name": "Pasta Arrabiata",
-  "description": "Spicy Tomato pasta sauce"
+    "name": "Pasta Arrabiata",
+    "description": "Spicy Tomato pasta sauce"
 }
 
-> {% client.global.set("recipeUuid", response.body.uuid) %}
+> {%
+    client.global.set("recipeUuid", response.body.uuid)
+%}
 
 ###
 
 ### Get all recipes
 GET http://localhost:8080/recipes
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 ###
 
 ### Get recipe by UUID (captured from POST)
 GET http://localhost:8080/recipes/{{recipeUuid}}
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 ###
 
@@ -46,15 +68,17 @@ Accept: application/json
 PATCH http://localhost:8080/recipes/{{recipeUuid}}
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 {
-  "name": "Cherry Tomato",
-  "description": "Small sweet tomato"
+    "name": "Spicy Pasta Arrabiata",
+    "description": "Extra Spicy Tomato pasta sauce"
 }
 
 ### Get recipe by UUID after Patch (captured from POST)
 GET http://localhost:8080/recipes/{{recipeUuid}}
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 ###
 
@@ -62,9 +86,10 @@ Accept: application/json
 POST http://localhost:8080/recipes/{{recipeUuid}}/instructions
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 {
-  "instruction": "Season to taste"
+    "instruction": "Season to taste"
 }
 
 ###
@@ -72,8 +97,11 @@ Accept: application/json
 ### Get recipe by UUID after Added Instruction
 GET http://localhost:8080/recipes/{{recipeUuid}}
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
-> {% client.global.set("recipeInstructionUuid", response.body.instructions[0].uuid) %}
+> {%
+    client.global.set("recipeInstructionUuid", response.body.instructions[0].uuid)
+%}
 
 ###
 
@@ -81,9 +109,10 @@ Accept: application/json
 PATCH http://localhost:8080/recipes/{{recipeUuid}}/instructions/{{recipeInstructionUuid}}
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 {
-  "instruction": "Salt and Pepper to taste"
+    "instruction": "Salt and Pepper to taste"
 }
 
 ###
@@ -91,5 +120,6 @@ Accept: application/json
 ### Delete recipe by UUID after Patch (captured from POST)
 # DELETE http://localhost:8080/recipes/{{recipeUuid}}
 # Accept: application/json
+# Authorization: Bearer {{auth_token}}
 
 ###
