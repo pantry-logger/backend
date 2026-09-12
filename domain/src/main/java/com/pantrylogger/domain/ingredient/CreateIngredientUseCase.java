@@ -14,17 +14,20 @@ public class CreateIngredientUseCase {
     private final IngredientRepositoryPort ingredientRepository;
 
     public CreateIngredientUseCase(
-            IngredientRepositoryPort ingredientRepository) {
+            IngredientRepositoryPort ingredientRepository
+    ) {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public Ingredient createIngredient(
-             @Valid CreateIngredientCommand createIngredientCommand) {
+    public Ingredient execute(
+            @Valid CreateIngredientCommand createIngredientCommand
+    ) {
         return this.ingredientRepository.save(
                 new Ingredient(
                         new IngredientUUID(UUID.randomUUID()),
                         createIngredientCommand.name(),
-                        createIngredientCommand.description()));
+                        createIngredientCommand.description()
+                ));
     }
 
 }

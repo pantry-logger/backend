@@ -13,9 +13,9 @@ val wiremockVersion: String by project
 
 plugins {
     id("buildlogic.java-application-conventions")
-    id("org.springframework.boot") version "4.0.0-M1"
+    id("org.springframework.boot") version "4.1.1"
     id("io.spring.dependency-management") version "1.1.7"
-    id("org.sonarqube") version "5.0.0.4638"
+    id("org.sonarqube") version "7.4.0.8496"
     id("jacoco-report-aggregation")
     id("pmd")
     id("checkstyle")
@@ -45,7 +45,7 @@ allprojects {
             property("sonar.tests", "src/test")
         }
     }
-    
+
     pmd {
         toolVersion = "7.1.0"
         isConsoleOutput = true
@@ -103,6 +103,8 @@ dependencies {
 
     "testImplementation"("org.springframework.boot:spring-boot-starter-web")
     "testImplementation"("org.springframework.boot:spring-boot-starter-test")
+    "testImplementation"("org.springframework.boot:spring-boot-starter-webmvc-test")
+    "testImplementation"("org.springframework.security:spring-security-test")
     "testImplementation"("org.wiremock:wiremock-jetty12:$wiremockVersion")
 }
 

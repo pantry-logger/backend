@@ -36,7 +36,8 @@ class IngredientsControllerTest {
     @BeforeEach
     void setup() {
         this.getAllIngredientsUseCase = Mockito.mock(GetAllIngredientsUseCase.class);
-        this.getIngredientByUuidUseCase = Mockito.mock(GetIngredientByUuidUseCase.class);
+        this.getIngredientByUuidUseCase = Mockito.mock(
+                GetIngredientByUuidUseCase.class);
         this.createIngredientUseCase = Mockito.mock(CreateIngredientUseCase.class);
         this.updateIngredientUseCase = Mockito.mock(UpdateIngredientUseCase.class);
         this.deleteIngredientUseCase = Mockito.mock(DeleteIngredientUseCase.class);
@@ -46,26 +47,31 @@ class IngredientsControllerTest {
                 this.getIngredientByUuidUseCase,
                 this.createIngredientUseCase,
                 this.updateIngredientUseCase,
-                this.deleteIngredientUseCase);
+                this.deleteIngredientUseCase
+        );
     }
 
     @Test
     void findAllShouldReturnAllIngredients() {
-        when(this.getAllIngredientsUseCase.getAllIngredients()).thenReturn(List.of(this.testIngredient));
+        when(this.getAllIngredientsUseCase.execute()).thenReturn(List.of(this.testIngredient));
 
         var response = this.controller.findAll();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
-        assertEquals(testIngredient.getName(), response.getBody().get(0).name());
+        assertEquals(
+                testIngredient.getName(),
+                response.getBody().get(0).name()
+        );
     }
 
     @Test
     void findByUuidShouldReturnIngredientIfExists() {
-        when(this.getIngredientByUuidUseCase.getIngredientByUuid(this.testIngredient.getUuid()))
+        when(this.getIngredientByUuidUseCase.execute(this.testIngredient.getUuid()))
                 .thenReturn(this.testIngredient);
 
-        var response = this.controller.findByUuid(this.testIngredient.getUuid().uuid());
+        var response = this.controller.findByUuid(this.testIngredient.getUuid()
+                .uuid());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(this.testIngredient.getName(), response.getBody().name());
@@ -75,10 +81,12 @@ class IngredientsControllerTest {
     void createNewShouldReturnCreatedIngredient() {
         CreateIngredientCommand command = new CreateIngredientCommand(
                 IngredientFixture.created_tomato().getName(),
-                IngredientFixture.created_tomato().getDescription());
+                IngredientFixture.created_tomato().getDescription()
+        );
         Ingredient createdIngredient = IngredientFixture.created_tomato();
 
-        when(this.createIngredientUseCase.createIngredient(command)).thenReturn(createdIngredient);
+        when(this.createIngredientUseCase.execute(command)).thenReturn(
+                createdIngredient);
 
         var response = this.controller.createNew(command);
 
@@ -90,25 +98,34 @@ class IngredientsControllerTest {
     void updateShouldReturnUpdatedIngredient() {
         UpdateIngredientCommand command = new UpdateIngredientCommand(
                 IngredientFixture.updated_carrot().getName(),
-                IngredientFixture.updated_carrot().getDescription());
+                IngredientFixture.updated_carrot().getDescription()
+        );
 
         Ingredient updatedIngredient = IngredientFixture.updated_carrot();
-        when(this.updateIngredientUseCase.updateIngredient(
-                this.testIngredient.getUuid().uuid(), command))
+        when(this.updateIngredientUseCase.execute(
+                this.testIngredient.getUuid(), command))
                 .thenReturn(updatedIngredient);
 
-        var response = this.controller.update(this.testIngredient.getUuid().uuid(), command);
+        var response = this.controller.update(
+                this.testIngredient.getUuid()
+                        .uuid(), command
+        );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(updatedIngredient.getName(), response.getBody().name());
-        assertEquals(updatedIngredient.getDescription(), response.getBody().description());
+        assertEquals(
+                updatedIngredient.getDescription(),
+                response.getBody().description()
+        );
     }
 
     @Test
     void DeleteShouldReturnOk() {
-        doNothing().when(deleteIngredientUseCase).deleteIngredient(this.testIngredient.getUuid().uuid());
+        doNothing().when(deleteIngredientUseCase)
+                .execute(this.testIngredient.getUuid());
 
-        var response = this.controller.delete(this.testIngredient.getUuid().uuid());
+        var response = this.controller.delete(this.testIngredient.getUuid()
+                .uuid());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }

@@ -17,32 +17,42 @@ class DeleteIngredientUseCaseTest {
 
     private DeleteIngredientUseCase deleteIngredientUseCase;
 
-    private IngredientRepositoryPort mockIngredientRepository = Mockito.mock(IngredientRepositoryPort.class);
-    private IngredientUUID badUUID = IngredientFixture.badUUID();
-    private Ingredient ingredient = IngredientFixture.tomato();
+    private final IngredientRepositoryPort mockIngredientRepository = Mockito.mock(
+            IngredientRepositoryPort.class);
+    private final IngredientUUID badUUID = IngredientFixture.badUUID();
+    private final Ingredient ingredient = IngredientFixture.tomato();
 
     @BeforeEach
     void setup() {
         doThrow(new EntityNotFoundException(
-                String.format("Ingredient with UUID %s not found", this.badUUID.uuid())))
+                String.format(
+                        "Ingredient with UUID %s not found",
+                        this.badUUID.uuid()
+                )))
                 .when(mockIngredientRepository)
                 .delete(this.badUUID);
 
-        this.deleteIngredientUseCase = new DeleteIngredientUseCase(mockIngredientRepository);
+        this.deleteIngredientUseCase = new DeleteIngredientUseCase(
+                mockIngredientRepository);
     }
 
     @Test
     void deleteIngredientByUuidShouldReturnIngredientAsOptional() {
         this.deleteIngredientUseCase
-                .deleteIngredient(this.ingredient.getUuid().uuid());
-        verify(this.mockIngredientRepository, times(1)).delete(this.ingredient.getUuid());
+                .execute(this.ingredient.getUuid());
+        verify(
+                this.mockIngredientRepository,
+                times(1)
+        ).delete(this.ingredient.getUuid());
     }
 
     @Test
     void deleteIngredientByUuidWithIncorrectUUIDShouldThrowException() {
-        assertThrows(EntityNotFoundException.class, () -> {
-            this.deleteIngredientUseCase
-                    .deleteIngredient(badUUID.uuid());
-        });
+        assertThrows(
+                EntityNotFoundException.class, () -> {
+                    this.deleteIngredientUseCase
+                            .execute(badUUID);
+                }
+        );
     }
 }

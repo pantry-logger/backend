@@ -1,15 +1,14 @@
 package com.pantrylogger.domain.recipe.create;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.pantrylogger.domain.recipe.Recipe;
-import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
 import com.pantrylogger.domain.recipe.RecipeRepositoryPort;
+import com.pantrylogger.domain.user.User;
 
 @Service
 @Validated
@@ -21,15 +20,19 @@ public class CreateRecipeUseCase {
         this.recipeRepository = recipeRepository;
     }
 
-    public Recipe createRecipe(
-            @Valid CreateRecipeCommand createRecipeCommand) {
+    public Recipe execute(
+            User user,
+            @Valid CreateRecipeCommand createRecipeCommand
+    ) {
         return this.recipeRepository.save(
                 new Recipe(
-                        new RecipeUUID(UUID.randomUUID()),
+                        user.getUsername(),
+                        createRecipeCommand.visibility(),
                         createRecipeCommand.name(),
                         createRecipeCommand.description(),
                         new ArrayList<>(),
-                        new ArrayList<>()));
+                        new ArrayList<>()
+                ));
 
     }
 }

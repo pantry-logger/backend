@@ -7,13 +7,13 @@ import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 @Component
 public class GetIngredientByUuidUseCase {
 
-    private final IngredientRepositoryPort queryPort;
+    private final IngredientRepositoryPort ingredientRepository;
 
-    public GetIngredientByUuidUseCase(IngredientRepositoryPort queryPort) {
-        this.queryPort = queryPort;
+    public GetIngredientByUuidUseCase(IngredientRepositoryPort ingredientRepository) {
+        this.ingredientRepository = ingredientRepository;
     }
 
-    public Ingredient getIngredientByUuid(IngredientUUID uuid) {
-        return queryPort.getByUUID(uuid);
+    public Ingredient execute(IngredientUUID uuid) {
+        return ingredientRepository.getByUUID(uuid);
     }
 }

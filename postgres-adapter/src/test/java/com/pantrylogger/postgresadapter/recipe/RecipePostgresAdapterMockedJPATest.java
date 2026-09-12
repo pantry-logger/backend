@@ -2,65 +2,80 @@ package com.pantrylogger.postgresadapter.recipe;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.pantrylogger.domain.RecipeFixture;
-import com.pantrylogger.domain.exception.EntityNotFoundException;
 import com.pantrylogger.domain.recipe.Recipe;
 import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
 
 class RecipePostgresAdapterMockedJPATest {
     private RecipePostgresAdapter adapter;
-    private RecipeJpaEntityRepository mockRepository = Mockito.mock(RecipeJpaEntityRepository.class);
+    private RecipeJpaEntityRepository mockRepository = Mockito.mock(
+            RecipeJpaEntityRepository.class);
 
-    private RecipeUUID badRecipeUUID = RecipeFixture.badUuid();
-    private Recipe testRecipe = RecipeFixture.emptyRecipe();
-    private RecipeJpaEntity testEntity = new RecipeJpaEntity(testRecipe);
+    private final RecipeUUID badRecipeUUID = RecipeFixture.badUuid();
+    private final Recipe missingRecipe = RecipeFixture.missingRecipe();
+    private final Recipe testRecipe = RecipeFixture.emptyRecipe();
+    private final RecipeJpaEntity testEntity = new RecipeJpaEntity(testRecipe);
 
     @BeforeEach
     void setup() {
         this.adapter = new RecipePostgresAdapter(this.mockRepository);
 
-        Mockito.when(this.mockRepository.findAll()).thenReturn(List.of(this.testEntity));
+        Mockito.when(this.mockRepository.findAll())
+                .thenReturn(List.of(this.testEntity));
         Mockito.when(this.mockRepository.findByIdWithInstructions(
-                testRecipe.getUuid().uuid()))
+                        testRecipe.getUuid().uuid()))
                 .thenReturn(Optional.of(this.testEntity));
         Mockito.when(this.mockRepository.findByIdWithInstructions(
                 badRecipeUUID.uuid())).thenReturn(Optional.empty());
         Mockito.when(this.mockRepository.save(
-                Mockito.any(RecipeJpaEntity.class))).thenReturn(this.testEntity);
+                        Mockito.any(RecipeJpaEntity.class)))
+                .thenReturn(this.testEntity);
     }
 
     @Test
     void getAllReturnsOneRecipe() {
 
         var recipes = adapter.getAll();
-        assertEquals(List.of(this.testRecipe),
-                recipes);
+        assertEquals(
+                List.of(this.testRecipe),
+                recipes
+        );
         assertEquals(testRecipe.getName(), recipes.get(0).getName());
-        assertEquals(testRecipe.getDescription(), recipes.get(0).getDescription());
+        assertEquals(
+                testRecipe.getDescription(),
+                recipes.get(0).getDescription()
+        );
     }
 
     @Test
     void getByUUIDShouldReturnMappedRecipe() {
-        Recipe recipe = this.adapter.getByUUID(testRecipe.getUuid());
+        Optional<Recipe> optionalRecipe = this.adapter.getByUUID(testRecipe.getUuid());
+        assertTrue(optionalRecipe.isPresent());
+        Recipe recipe = optionalRecipe.get();
         assertEquals(this.testRecipe.getName(), recipe.getName());
         assertEquals(this.testRecipe.getDescription(), recipe.getDescription());
     }
 
     @Test
-    void getWithBadIdShouldThrowException() {
-        assertThrows(
-                EntityNotFoundException.class,
-                () -> this.adapter.getByUUID(badRecipeUUID));
+    void getWithBadIdShouldReturnOptionalEmpty() {
+        Optional<Recipe> optionalRecipe = this.adapter.getByUUID(badRecipeUUID);
+        assertTrue(
+                optionalRecipe.isEmpty()
+        );
     }
 
     @Test
@@ -71,16 +86,24 @@ class RecipePostgresAdapterMockedJPATest {
     }
 
     @Test
-    void deleteShouldWorkSuccesfully() {
-        this.adapter.delete(testRecipe.getUuid());
-        verify(this.mockRepository, times(1)).delete(Mockito.any(RecipeJpaEntity.class));
+    void deleteShouldWorkSuccessfully() {
+        this.adapter.delete(testRecipe);
+        verify(
+                this.mockRepository,
+                times(1)
+        ).deleteById(Mockito.any(UUID.class));
 
     }
 
     @Test
     void deleteWithBadIDShouldThrowException() {
+        doThrow(new EmptyResultDataAccessException(1))
+                .when(this.mockRepository)
+                .deleteById(missingRecipe.getUuid().uuid());
+
         assertThrows(
-                EntityNotFoundException.class,
-                () -> this.adapter.delete(badRecipeUUID));
+                IllegalStateException.class,
+                () -> this.adapter.delete(this.missingRecipe)
+        );
     }
 }

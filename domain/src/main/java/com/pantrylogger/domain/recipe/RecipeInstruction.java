@@ -11,10 +11,19 @@ public class RecipeInstruction {
         public RecipeInstructionUUID(String strUUID) {
             this(UUID.fromString(strUUID));
         }
+
+        public static RecipeInstructionUUID generate() {
+            return new RecipeInstructionUUID(UUID.randomUUID());
+        }
     }
 
     public RecipeInstruction(RecipeInstructionUUID uuid, String instruction) {
         this.uuid = uuid;
+        this.instruction = instruction;
+    }
+
+    public RecipeInstruction(String instruction) {
+        this.uuid = RecipeInstructionUUID.generate();
         this.instruction = instruction;
     }
 

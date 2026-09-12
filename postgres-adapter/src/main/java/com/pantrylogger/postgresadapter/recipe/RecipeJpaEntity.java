@@ -7,12 +7,16 @@ import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 
 import com.pantrylogger.domain.recipe.Recipe;
 import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
+import com.pantrylogger.domain.recipe.RecipeVisibility;
+import com.pantrylogger.domain.user.Username;
 import com.pantrylogger.postgresadapter.ingredient.IngredientAmountJpaEntity;
 
 @Entity
@@ -20,6 +24,12 @@ public class RecipeJpaEntity {
 
     @Id
     private UUID uuid;
+
+    private String ownerUsername;
+
+    @Enumerated(EnumType.STRING)
+    private RecipeVisibility visibility;
+
     private String name;
     private String description;
 
@@ -36,13 +46,17 @@ public class RecipeJpaEntity {
 
     public RecipeJpaEntity(Recipe recipe) {
         this.uuid = recipe.getUuid().uuid();
+        this.ownerUsername = recipe.getOwner().toString();
+        this.visibility = recipe.getVisibility();
         this.name = recipe.getName();
         this.description = recipe.getDescription();
         this.ingredients = recipe.getIngredients()
-                .stream().map(ia -> new IngredientAmountJpaEntity(ia, this))
+                .stream()
+                .map(ia -> new IngredientAmountJpaEntity(ia, this))
                 .collect(Collectors.toCollection(ArrayList::new));
         this.instructions = recipe.getInstructions()
-                .stream().map(instr -> new RecipeInstructionJpaEntity(instr, this))
+                .stream()
+                .map(instr -> new RecipeInstructionJpaEntity(instr, this))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -65,6 +79,8 @@ public class RecipeJpaEntity {
     public Recipe toRecipe() {
         return new Recipe(
                 new RecipeUUID(this.uuid),
+                new Username(this.ownerUsername),
+                this.visibility,
                 this.name,
                 this.description,
                 this.ingredients.stream()
@@ -72,7 +88,8 @@ public class RecipeJpaEntity {
                         .collect(Collectors.toCollection(ArrayList::new)),
                 this.instructions.stream()
                         .map(RecipeInstructionJpaEntity::toRecipeInstruction)
-                        .collect(Collectors.toCollection(ArrayList::new)));
+                        .collect(Collectors.toCollection(ArrayList::new))
+        );
     }
 
 }

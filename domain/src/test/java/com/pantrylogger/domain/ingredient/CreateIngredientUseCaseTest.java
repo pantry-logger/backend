@@ -13,13 +13,16 @@ class CreateIngredientUseCaseTest {
     private CreateIngredientUseCase createIngredientUseCase;
     private CreateIngredientCommand createIngredientCommand = new CreateIngredientCommand(
             IngredientFixture.carrot().getName(),
-            IngredientFixture.carrot().getDescription());
+            IngredientFixture.carrot().getDescription()
+    );
     private Ingredient expectedIngredient = IngredientFixture.carrot();
 
     @BeforeEach
     void setup() {
-        IngredientRepositoryPort mockIngredientRepository = Mockito.mock(IngredientRepositoryPort.class);
-        this.createIngredientUseCase = new CreateIngredientUseCase(mockIngredientRepository);
+        IngredientRepositoryPort mockIngredientRepository = Mockito.mock(
+                IngredientRepositoryPort.class);
+        this.createIngredientUseCase = new CreateIngredientUseCase(
+                mockIngredientRepository);
 
         Mockito.when(mockIngredientRepository.save(Mockito.any(Ingredient.class)))
                 .thenReturn(this.expectedIngredient);
@@ -28,9 +31,12 @@ class CreateIngredientUseCaseTest {
 
     @Test
     void createIngredientShouldSaveAndReturnIngredient() {
-        Ingredient ingredient = this.createIngredientUseCase.createIngredient(this.createIngredientCommand);
+        Ingredient ingredient = this.createIngredientUseCase.execute(this.createIngredientCommand);
 
         assertEquals(createIngredientCommand.name(), ingredient.getName());
-        assertEquals(createIngredientCommand.description(), ingredient.getDescription());
+        assertEquals(
+                createIngredientCommand.description(),
+                ingredient.getDescription()
+        );
     }
 }

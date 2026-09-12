@@ -13,11 +13,12 @@ public class GetAllRecipesUseCase {
     private final RecipeRepositoryPort recipeRepositoryPort;
 
     public GetAllRecipesUseCase(
-            RecipeRepositoryPort recipeRepositoryPort) {
+            RecipeRepositoryPort recipeRepositoryPort
+    ) {
         this.recipeRepositoryPort = recipeRepositoryPort;
     }
 
-    public List<Recipe> getAllRecipes() {
+    public List<Recipe> execute() {
         return recipeRepositoryPort.getAll();
     }
 }
