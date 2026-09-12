@@ -35,7 +35,6 @@ public class IngredientAmountJpaEntity {
     public IngredientAmountJpaEntity() {
     }
 
-    @SuppressWarnings("PMD.SwitchDensity")
     public IngredientAmountJpaEntity(
             IngredientAmount ingredientAmount,
             RecipeJpaEntity recipeJpaEntity
@@ -59,9 +58,6 @@ public class IngredientAmountJpaEntity {
                 this.amount = i.value().asQuantity();
                 this.type = AmountType.INDIVIDUAL;
             }
-            default -> throw new IllegalArgumentException(
-                    "Unknown IngredientAmountEntity subclass: " + ingredientAmount.getAmount());
-
         }
         this.recipe = recipeJpaEntity;
     }
@@ -96,8 +92,6 @@ public class IngredientAmountJpaEntity {
                     this.getIngredient().toIngredient(),
                     new Amount.Individual(IndividualAmount.of(this.getAmount()))
             );
-            default -> throw new IllegalArgumentException(
-                    "Unknown IngredientAmountEntity subclass: " + this.getClass());
         };
     }
 

@@ -1,5 +1,6 @@
 package com.pantrylogger.domain.user;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import jakarta.annotation.Nonnull;
@@ -16,7 +17,7 @@ public record Email(String address) {
             throw new InvalidEmailException(
                     "Email cannot be null or blank");
         }
-        address = address.trim().toLowerCase();
+        address = address.trim().toLowerCase(Locale.ENGLISH);
         if (!EMAIL_PATTERN.matcher(address).matches()) {
             throw new InvalidEmailException("Invalid email: " + address);
         }

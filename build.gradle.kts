@@ -34,8 +34,15 @@ allprojects {
         mavenCentral()
     }
 
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(25))
+        }
+    }
+
     tasks.withType(JavaCompile::class) {
-        sourceCompatibility = JavaVersion.VERSION_21.toString()
+        sourceCompatibility = JavaVersion.VERSION_25.toString()
+        targetCompatibility = JavaVersion.VERSION_25.toString()
         options.compilerArgs.add("-Werror")
     }
 
@@ -47,8 +54,15 @@ allprojects {
     }
 
     pmd {
-        toolVersion = "7.1.0"
+        toolVersion = "7.27.0"
         isConsoleOutput = true
+    }
+
+    tasks.withType<Pmd>().configureEach {
+        javaLauncher.set(
+            project.javaToolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(25))
+            })
     }
 
     // checkstyle {
@@ -154,8 +168,7 @@ sonar {
         property("sonar.sourceEncoding", "UTF-8")
         property(
             "sonar.coverage.jacoco.xmlReportPaths",
-            "build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml," +
-                    "../build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml"
+            "build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml," + "../build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml"
         )
         //property("sonar.qualitygate.wait", "true")
     }

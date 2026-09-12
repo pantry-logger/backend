@@ -6,6 +6,7 @@ import com.pantrylogger.domain.user.User;
 import com.pantrylogger.domain.user.Username;
 
 public class UserFixture {
+
     private static final User USER = new User(
             new ExternalAuthId("test_external_id"),
             new Email("test@test.com"),
@@ -32,6 +33,9 @@ public class UserFixture {
             "Missing",
             "Missed"
     );
+
+    private UserFixture() {
+    }
 
     public static User basicTestUser() {
         return USER;

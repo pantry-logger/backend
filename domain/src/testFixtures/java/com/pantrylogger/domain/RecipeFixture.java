@@ -101,6 +101,9 @@ public class RecipeFixture {
             "This is a test instruction."
     );
 
+    private RecipeFixture() {
+    }
+
     public static Recipe emptyRecipe() {
         return EMPTY_RECIPE;
     }

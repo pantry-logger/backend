@@ -1,5 +1,6 @@
 package com.pantrylogger.domain.user;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import jakarta.annotation.Nonnull;
@@ -16,7 +17,7 @@ public record Username(String username) {
             throw new InvalidUsernameException(
                     "Username cannot be null or blank");
         }
-        username = username.trim().toLowerCase();
+        username = username.trim().toLowerCase(Locale.ENGLISH);
         if (!USERNAME_PATTERN.matcher(username).matches()) {
             throw new InvalidUsernameException("Invalid username: " + username);
         }

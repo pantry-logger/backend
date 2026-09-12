@@ -80,7 +80,6 @@ class RecipesControllerTest {
         var response = this.recipesController.findAllAccessible(this.testUserPrincipal);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assert response.getBody() != null;
         assertEquals(2, response.getBody().size());
         assertEquals(
                 testRecipes.get(0).getName(),
