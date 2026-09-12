@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.pantrylogger.domain.exception.InvalidEmailException;
 
-public class EmailTest {
+class EmailTest {
 
     @Test
     void nullEmailThrowsException() {

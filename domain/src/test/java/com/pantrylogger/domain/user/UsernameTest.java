@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.pantrylogger.domain.exception.InvalidUsernameException;
 
-public class UsernameTest {
+class UsernameTest {
 
     @Test
     void nullUsernameThrowsException() {
