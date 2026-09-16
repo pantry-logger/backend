@@ -25,7 +25,10 @@ public class RecipeInstructionJpaEntity {
     public RecipeInstructionJpaEntity() {
     }
 
-    public RecipeInstructionJpaEntity(RecipeInstruction recipeInstruction, RecipeJpaEntity recipe) {
+    public RecipeInstructionJpaEntity(
+            RecipeInstruction recipeInstruction,
+            RecipeJpaEntity recipe
+    ) {
         this.uuid = recipeInstruction.getUuid().uuid();
         this.instruction = recipeInstruction.getInstruction();
         this.recipe = recipe;
@@ -35,21 +38,14 @@ public class RecipeInstructionJpaEntity {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
     public String getInstruction() {
         return instruction;
-    }
-
-    public void setInstruction(String instruction) {
-        this.instruction = instruction;
     }
 
     public RecipeInstruction toRecipeInstruction() {
         return new RecipeInstruction(
                 new RecipeInstructionUUID(this.getUuid()),
-                this.getInstruction());
+                this.getInstruction()
+        );
     }
 }

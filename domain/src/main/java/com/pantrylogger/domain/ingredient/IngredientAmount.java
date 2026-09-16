@@ -9,7 +9,8 @@ public class IngredientAmount {
 
     public IngredientAmount(
             Ingredient ingredient,
-            Amount amount) {
+            Amount amount
+    ) {
         this.ingredient = ingredient;
         this.amount = amount;
     }
@@ -28,6 +29,10 @@ public class IngredientAmount {
 
     public void setAmount(Amount amount) {
         this.amount = amount;
+    }
+
+    public void increaseAmount(Amount amount) {
+        this.amount = this.amount.add(amount);
     }
 
 }

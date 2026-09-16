@@ -20,31 +20,14 @@ public class IngredientAmountId implements Serializable {
         this.ingredientUuid = ingredientUuid;
     }
 
-    public UUID getRecipeUuid() {
-        return recipeUuid;
-    }
-
-    public void setRecipeUuid(UUID recipeUuid) {
-        this.recipeUuid = recipeUuid;
-    }
-
-    public UUID getIngredientUuid() {
-        return ingredientUuid;
-    }
-
-    public void setIngredientUuid(UUID ingredientUuid) {
-        this.ingredientUuid = ingredientUuid;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof IngredientAmountId)) {
+        if (!(o instanceof IngredientAmountId that)) {
             return false;
         }
-        IngredientAmountId that = (IngredientAmountId) o;
         return Objects.equals(recipeUuid, that.recipeUuid) &&
                 Objects.equals(ingredientUuid, that.ingredientUuid);
     }

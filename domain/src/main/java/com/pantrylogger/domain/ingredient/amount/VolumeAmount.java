@@ -1,6 +1,6 @@
 package com.pantrylogger.domain.ingredient.amount;
 
-import com.pantrylogger.domain.exception.AmountConversionException;
+import com.pantrylogger.domain.exception.AmountException;
 
 public record VolumeAmount(int milliliters) {
 
@@ -22,10 +22,14 @@ public record VolumeAmount(int milliliters) {
 
     public WeightAmount toWeight(int densityMgPerMl) {
         if (densityMgPerMl <= 0) {
-            throw new AmountConversionException("density must be positive");
+            throw new AmountException("density must be positive");
         }
 
         return WeightAmount.fromMilligrams(asMilliliters() * densityMgPerMl);
+    }
+
+    public VolumeAmount plus(VolumeAmount other) {
+        return new VolumeAmount(this.milliliters + other.milliliters);
     }
 
 }
