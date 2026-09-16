@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import com.pantrylogger.domain.IngredientFixture;
 import com.pantrylogger.domain.exception.EntityNotFoundException;
 import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
+import com.pantrylogger.domain.ingredient.delete.DeleteIngredientUseCase;
 
 class DeleteIngredientUseCaseTest {
 

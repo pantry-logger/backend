@@ -12,14 +12,14 @@ import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 
 import com.pantrylogger.domain.IngredientFixture;
-import com.pantrylogger.domain.ingredient.CreateIngredientCommand;
-import com.pantrylogger.domain.ingredient.CreateIngredientUseCase;
-import com.pantrylogger.domain.ingredient.DeleteIngredientUseCase;
-import com.pantrylogger.domain.ingredient.GetAllIngredientsUseCase;
-import com.pantrylogger.domain.ingredient.GetIngredientByUuidUseCase;
 import com.pantrylogger.domain.ingredient.Ingredient;
-import com.pantrylogger.domain.ingredient.UpdateIngredientCommand;
-import com.pantrylogger.domain.ingredient.UpdateIngredientUseCase;
+import com.pantrylogger.domain.ingredient.create.CreateIngredientCommand;
+import com.pantrylogger.domain.ingredient.create.CreateIngredientUseCase;
+import com.pantrylogger.domain.ingredient.delete.DeleteIngredientUseCase;
+import com.pantrylogger.domain.ingredient.get.GetAllIngredientsUseCase;
+import com.pantrylogger.domain.ingredient.get.GetIngredientByUuidUseCase;
+import com.pantrylogger.domain.ingredient.update.UpdateIngredientCommand;
+import com.pantrylogger.domain.ingredient.update.UpdateIngredientUseCase;
 
 class IngredientsControllerTest {
 

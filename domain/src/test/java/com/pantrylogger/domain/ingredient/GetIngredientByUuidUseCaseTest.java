@@ -3,6 +3,8 @@ package com.pantrylogger.domain.ingredient;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -10,6 +12,7 @@ import org.mockito.Mockito;
 import com.pantrylogger.domain.IngredientFixture;
 import com.pantrylogger.domain.exception.EntityNotFoundException;
 import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
+import com.pantrylogger.domain.ingredient.get.GetIngredientByUuidUseCase;
 
 class GetIngredientByUuidUseCaseTest {
 
@@ -24,7 +27,7 @@ class GetIngredientByUuidUseCaseTest {
                 IngredientRepositoryPort.class);
         Mockito
                 .when(mockIngredientRepositoryPort.getByUUID(this.ingredient.getUuid()))
-                .thenReturn(ingredient);
+                .thenReturn(Optional.of(ingredient));
 
         Mockito.when(mockIngredientRepositoryPort
                         .getByUUID(this.badUUID))

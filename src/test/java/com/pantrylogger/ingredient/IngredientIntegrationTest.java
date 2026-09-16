@@ -31,10 +31,10 @@ import tools.jackson.databind.ObjectMapper;
 
 import com.pantrylogger.domain.IngredientFixture;
 import com.pantrylogger.domain.UserFixture;
-import com.pantrylogger.domain.ingredient.CreateIngredientCommand;
 import com.pantrylogger.domain.ingredient.Ingredient;
 import com.pantrylogger.domain.ingredient.IngredientRepositoryPort;
-import com.pantrylogger.domain.ingredient.UpdateIngredientCommand;
+import com.pantrylogger.domain.ingredient.create.CreateIngredientCommand;
+import com.pantrylogger.domain.ingredient.update.UpdateIngredientCommand;
 import com.pantrylogger.domain.user.User;
 import com.pantrylogger.domain.user.UserRepositoryPort;
 import com.pantrylogger.restapi.security.CustomUserDetails;

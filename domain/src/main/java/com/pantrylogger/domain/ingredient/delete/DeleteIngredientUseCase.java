@@ -1,8 +1,9 @@
-package com.pantrylogger.domain.ingredient;
+package com.pantrylogger.domain.ingredient.delete;
 
 import org.springframework.stereotype.Component;
 
 import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
+import com.pantrylogger.domain.ingredient.IngredientRepositoryPort;
 
 @Component
 public class DeleteIngredientUseCase {

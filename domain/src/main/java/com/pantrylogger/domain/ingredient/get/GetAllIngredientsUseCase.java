@@ -1,8 +1,11 @@
-package com.pantrylogger.domain.ingredient;
+package com.pantrylogger.domain.ingredient.get;
 
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+
+import com.pantrylogger.domain.ingredient.Ingredient;
+import com.pantrylogger.domain.ingredient.IngredientRepositoryPort;
 
 @Component
 public class GetAllIngredientsUseCase {

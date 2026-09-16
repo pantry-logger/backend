@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.pantrylogger.domain.ingredient.Ingredient;
 import com.pantrylogger.domain.ingredient.IngredientAmount;
+import com.pantrylogger.domain.ingredient.IngredientNotFoundException;
 import com.pantrylogger.domain.ingredient.IngredientRepositoryPort;
 import com.pantrylogger.domain.ingredient.amount.Amount;
 import com.pantrylogger.domain.recipe.Recipe;
@@ -43,7 +44,9 @@ public class AddIngredientAmountUseCase {
 
         Ingredient ingredient = this.ingredientRepository
                 .getByUUID(
-                        addIngredientAmountCommand.ingredientUUID());
+                        addIngredientAmountCommand.ingredientUUID())
+                .orElseThrow(() -> new IngredientNotFoundException(
+                        addIngredientAmountCommand.ingredientUUID()));
 
         recipe.addIngredient(
                 new IngredientAmount(

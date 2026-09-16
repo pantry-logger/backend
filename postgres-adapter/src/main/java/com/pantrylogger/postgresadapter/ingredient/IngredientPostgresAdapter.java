@@ -28,28 +28,32 @@ public class IngredientPostgresAdapter implements IngredientRepositoryPort {
     }
 
     @Override
-    public Ingredient getByUUID(IngredientUUID uuid) {
+    public Optional<Ingredient> getByUUID(IngredientUUID uuid) {
         return ingredientJpaEntityRepository
                 .findById(uuid.uuid())
-                .map(IngredientJpaEntity::toIngredient)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Ingredient with UUID %s not found", uuid.uuid())));
+                .map(IngredientJpaEntity::toIngredient);
     }
 
     @Override
     public Ingredient save(Ingredient ingredient) {
-        IngredientJpaEntity ingredientJpaEntity = new IngredientJpaEntity(ingredient);
+        IngredientJpaEntity ingredientJpaEntity = new IngredientJpaEntity(
+                ingredient);
 
-        return this.ingredientJpaEntityRepository.save(ingredientJpaEntity).toIngredient();
+        return this.ingredientJpaEntityRepository.save(ingredientJpaEntity)
+                .toIngredient();
     }
 
     @Override
     public void delete(IngredientUUID uuid) {
-        Optional<IngredientJpaEntity> optionalIngredientJpaEntity = ingredientJpaEntityRepository.findById(uuid.uuid());
+        Optional<IngredientJpaEntity> optionalIngredientJpaEntity = ingredientJpaEntityRepository.findById(
+                uuid.uuid());
 
         if (optionalIngredientJpaEntity.isEmpty()) {
             throw new EntityNotFoundException(
-                    String.format("Ingredient with UUID %s not found", uuid.uuid()));
+                    String.format(
+                            "Ingredient with UUID %s not found",
+                            uuid.uuid()
+                    ));
         }
 
         IngredientJpaEntity ingredientJpaEntity = optionalIngredientJpaEntity.get();
