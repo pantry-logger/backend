@@ -1,4 +1,4 @@
-package com.pantrylogger.domain.ingredient;
+package com.pantrylogger.domain.ingredient.create;
 
 import java.util.UUID;
 
@@ -6,7 +6,9 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import com.pantrylogger.domain.ingredient.Ingredient;
 import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
+import com.pantrylogger.domain.ingredient.IngredientRepositoryPort;
 
 @Component
 @Validated

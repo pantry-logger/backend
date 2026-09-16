@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.pantrylogger.domain.IngredientFixture;
+import com.pantrylogger.domain.ingredient.get.GetAllIngredientsUseCase;
 
 class GetAllIngredientsUseCaseTest {
 

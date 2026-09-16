@@ -1,6 +1,9 @@
 package com.pantrylogger.ingredient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +52,12 @@ class IngredientPostgresAdapterTest {
 
         ingredientRepository.save(ingredient);
 
-        var found = ingredientRepository.getByUUID(ingredient.getUuid());
+        Optional<Ingredient> optionalFound = ingredientRepository.getByUUID(
+                ingredient.getUuid());
+
+        assertTrue(optionalFound.isPresent());
+
+        Ingredient found = optionalFound.get();
 
         assertEquals(ingredient.getName(), found.getName());
         assertEquals(ingredient.getDescription(), found.getDescription());

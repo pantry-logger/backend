@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pantrylogger.domain.ingredient.CreateIngredientCommand;
-import com.pantrylogger.domain.ingredient.CreateIngredientUseCase;
-import com.pantrylogger.domain.ingredient.DeleteIngredientUseCase;
-import com.pantrylogger.domain.ingredient.GetAllIngredientsUseCase;
-import com.pantrylogger.domain.ingredient.GetIngredientByUuidUseCase;
 import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
-import com.pantrylogger.domain.ingredient.UpdateIngredientCommand;
-import com.pantrylogger.domain.ingredient.UpdateIngredientUseCase;
+import com.pantrylogger.domain.ingredient.create.CreateIngredientCommand;
+import com.pantrylogger.domain.ingredient.create.CreateIngredientUseCase;
+import com.pantrylogger.domain.ingredient.delete.DeleteIngredientUseCase;
+import com.pantrylogger.domain.ingredient.get.GetAllIngredientsUseCase;
+import com.pantrylogger.domain.ingredient.get.GetIngredientByUuidUseCase;
+import com.pantrylogger.domain.ingredient.update.UpdateIngredientCommand;
+import com.pantrylogger.domain.ingredient.update.UpdateIngredientUseCase;
 import com.pantrylogger.restapi.SuccessResponse;
 
 @RestController

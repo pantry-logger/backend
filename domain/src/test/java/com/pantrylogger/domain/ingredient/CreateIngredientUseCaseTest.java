@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.pantrylogger.domain.IngredientFixture;
+import com.pantrylogger.domain.ingredient.create.CreateIngredientCommand;
+import com.pantrylogger.domain.ingredient.create.CreateIngredientUseCase;
 
 class CreateIngredientUseCaseTest {
 

@@ -1,10 +1,10 @@
-package com.pantrylogger.domain.ingredient;
+package com.pantrylogger.domain.ingredient.create;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record UpdateIngredientCommand(
+public record CreateIngredientCommand(
         @NotNull
         @NotBlank
         @Size(min = 2, max = 50, message = "Ingredient Name must be between 2 and 50 characters")
