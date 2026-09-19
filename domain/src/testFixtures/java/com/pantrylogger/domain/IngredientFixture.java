@@ -56,22 +56,6 @@ public class IngredientFixture {
             "Yummy Salty Italian Gold"
     );
 
-    private static final IngredientAmount BUTTER_AMOUNT = new IngredientAmount(BUTTER,
-            Amount.of(50, IngredientAmountUnit.GRAM)
-    );
-
-    private static final IngredientAmount ONION_AMOUNT = new IngredientAmount(ONION,
-            Amount.of(1, IngredientAmountUnit.INDIVIDUAL)
-    );
-
-    private static final IngredientAmount MUSHROOMS_AMOUNT = new IngredientAmount(MUSHROOMS,
-            Amount.of(300, IngredientAmountUnit.GRAM)
-    );
-
-    private static final IngredientAmount PARMESAN_AMOUNT = new IngredientAmount(PARMESAN,
-            Amount.of(100, IngredientAmountUnit.GRAM)
-    );
-
     private static final IngredientUUID GOOD_UUID = new IngredientUUID(
             "a2bb99bf-c021-4005-b387-21c4df774568");
 
@@ -122,18 +106,30 @@ public class IngredientFixture {
     }
 
     public static IngredientAmount butterAmount() {
-        return BUTTER_AMOUNT;
+        return new IngredientAmount(
+                BUTTER,
+                Amount.of(50, IngredientAmountUnit.GRAM)
+        );
     }
 
     public static IngredientAmount onionAmount() {
-        return ONION_AMOUNT;
+        return new IngredientAmount(
+                ONION,
+                Amount.of(1, IngredientAmountUnit.INDIVIDUAL)
+        );
     }
 
     public static IngredientAmount mushroomsAmount() {
-        return MUSHROOMS_AMOUNT;
+        return new IngredientAmount(
+                MUSHROOMS,
+                Amount.of(300, IngredientAmountUnit.GRAM)
+        );
     }
 
     public static IngredientAmount parmesanAmount() {
-        return PARMESAN_AMOUNT;
+        return new IngredientAmount(
+                PARMESAN,
+                Amount.of(100, IngredientAmountUnit.GRAM)
+        );
     }
 }

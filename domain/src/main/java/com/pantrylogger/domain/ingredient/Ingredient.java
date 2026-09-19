@@ -3,15 +3,23 @@ package com.pantrylogger.domain.ingredient;
 import java.util.Objects;
 import java.util.UUID;
 
+import jakarta.annotation.Nonnull;
+
 public class Ingredient {
 
-    private IngredientUUID uuid;
+    private final IngredientUUID uuid;
     private String name;
     private String description;
 
     public record IngredientUUID(UUID uuid) {
         public IngredientUUID(String strUUID) {
             this(UUID.fromString(strUUID));
+        }
+
+        @Override
+        @Nonnull
+        public String toString() {
+            return uuid.toString();
         }
     }
 

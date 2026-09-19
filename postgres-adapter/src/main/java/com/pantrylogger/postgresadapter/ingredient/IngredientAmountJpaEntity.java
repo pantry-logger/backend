@@ -2,6 +2,8 @@ package com.pantrylogger.postgresadapter.ingredient;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -30,6 +32,7 @@ public class IngredientAmountJpaEntity {
 
     private int amount;
 
+    @Enumerated(EnumType.STRING)
     private AmountType type;
 
     public IngredientAmountJpaEntity() {
