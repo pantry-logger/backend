@@ -2,7 +2,6 @@ package com.pantrylogger.postgresadapter.shoppinglist;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,7 @@ public class ShoppingListPostgresAdapter implements ShoppingListRepositoryPort {
                         .toString())
                 .stream()
                 .map(ShoppingListJpaEntity::toShoppingList)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

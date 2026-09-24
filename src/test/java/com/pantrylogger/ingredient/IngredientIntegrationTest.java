@@ -11,6 +11,10 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -66,15 +70,12 @@ class IngredientIntegrationTest {
 
     private User testUser;
 
-    private Ingredient carrot = IngredientFixture.carrot();
-    private Ingredient tomato = IngredientFixture.tomato();
+    private final Ingredient carrot = IngredientFixture.carrot();
+    private final Ingredient tomato = IngredientFixture.tomato();
 
-    private String message = "$.message";
-    private String name = "$.name";
-    private String createdIngredientName = "Tomato";
-    private String description = "$.description";
-    private String createdIngredientDescription = "Some description";
-    private String ingredientsEndPoint = "/ingredients";
+    private final String message = "$.message";
+    private final String name = "$.name";
+    private final String ingredientsEndPoint = "/ingredients";
 
     @DynamicPropertySource
     static void configure(DynamicPropertyRegistry registry) {
@@ -144,10 +145,12 @@ class IngredientIntegrationTest {
                         .getName()));
     }
 
-    @Test
-    void testCreateIngredientWithNullName() throws Exception {
+    @ParameterizedTest
+    @NullSource
+    @MethodSource("com.pantrylogger.domain.IngredientFixture#badNames")
+    void testCreateIngredientWithBadNames(String input) throws Exception {
         CreateIngredientCommand command = new CreateIngredientCommand(
-                null,
+                input,
                 IngredientFixture.created_tomato().getDescription()
         );
 
@@ -158,67 +161,11 @@ class IngredientIntegrationTest {
                 .andExpect(jsonPath(this.message).exists());
     }
 
-    @Test
-    void testCreateIngredientWithBlankName() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {2, 25, 50})
+    void testCreateIngredientWithMinValidNameLength(int stringLength) throws Exception {
         CreateIngredientCommand command = new CreateIngredientCommand(
-                "",
-                IngredientFixture.created_tomato().getDescription()
-        );
-
-        mockMvc.perform(post(this.ingredientsEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testCreateIngredientWithWhitespaceOnlyName() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand(
-                "   ",
-                IngredientFixture.created_tomato().getDescription()
-        );
-
-        mockMvc.perform(post(this.ingredientsEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testCreateIngredientWithNameTooShort() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand(
-                "A",
-                IngredientFixture.created_tomato().getDescription()
-        );
-
-        mockMvc.perform(post(this.ingredientsEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testCreateIngredientWithNameTooLong() throws Exception {
-        String longName = "A".repeat(51); // 51 characters
-        CreateIngredientCommand command = new CreateIngredientCommand(
-                longName,
-                IngredientFixture.created_tomato().getDescription()
-        );
-
-        mockMvc.perform(post(this.ingredientsEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testCreateIngredientWithMinValidNameLength() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand(
-                "AB",
+                "A".repeat(stringLength),
                 IngredientFixture.created_tomato().getDescription()
         );
 
@@ -226,29 +173,15 @@ class IngredientIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath(this.name).value("AB"));
+                .andExpect(jsonPath(this.name).value(command.name()));
     }
 
-    @Test
-    void testCreateIngredientWithMaxValidNameLength() throws Exception {
-        String maxName = "A".repeat(50); // 50 characters
-        CreateIngredientCommand command = new CreateIngredientCommand(
-                maxName,
-                IngredientFixture.created_tomato().getDescription()
-        );
-
-        mockMvc.perform(post(this.ingredientsEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath(this.name).value(maxName));
-    }
-
-    @Test
-    void testCreateIngredientWithNullDescription() throws Exception {
+    @ParameterizedTest
+    @NullSource
+    void testCreateIngredientWithBadDescription(String input) throws Exception {
         CreateIngredientCommand command = new CreateIngredientCommand(
                 IngredientFixture.created_tomato().getName(),
-                null
+                input
         );
 
         mockMvc.perform(post(this.ingredientsEndPoint).with(asUser())
@@ -256,22 +189,6 @@ class IngredientIntegrationTest {
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testCreateIngredientWithEmptyDescription() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand(
-                IngredientFixture.created_tomato().getName(),
-                ""
-        );
-
-        mockMvc.perform(post(this.ingredientsEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath(this.name).value(IngredientFixture.created_tomato()
-                        .getName()))
-                .andExpect(jsonPath(this.description).value(""));
     }
 
     @Test
@@ -288,10 +205,12 @@ class IngredientIntegrationTest {
                 .andExpect(jsonPath("$.message").exists());
     }
 
-    @Test
-    void testUpdateIngredientWithNullName() throws Exception {
+    @ParameterizedTest
+    @NullSource
+    @MethodSource("com.pantrylogger.domain.IngredientFixture#badNames")
+    void testUpdateIngredientBadName(String input) throws Exception {
         UpdateIngredientCommand command = new UpdateIngredientCommand(
-                null,
+                input,
                 IngredientFixture.updated_carrot().getDescription()
         );
 
@@ -305,79 +224,11 @@ class IngredientIntegrationTest {
                 .andExpect(jsonPath(this.message).exists());
     }
 
-    @Test
-    void testUpdateIngredientWithBlankName() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {2, 25, 50})
+    void testUpdateIngredientWithValidNameLengths(int stringLength) throws Exception {
         UpdateIngredientCommand command = new UpdateIngredientCommand(
-                "",
-                IngredientFixture.updated_carrot().getDescription()
-        );
-
-        mockMvc.perform(patch(this.ingredientsEndPoint + "/" + IngredientFixture.updated_carrot()
-                        .getUuid()
-                        .uuid()
-                        .toString()).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testUpdateIngredientWithWhitespaceOnlyName() throws Exception {
-        UpdateIngredientCommand command = new UpdateIngredientCommand(
-                "   ",
-                IngredientFixture.updated_carrot().getDescription()
-        );
-
-        mockMvc.perform(patch(this.ingredientsEndPoint + "/" + IngredientFixture.updated_carrot()
-                        .getUuid()
-                        .uuid()
-                        .toString()).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testUpdateIngredientWithNameTooShort() throws Exception {
-        UpdateIngredientCommand command = new UpdateIngredientCommand(
-                "A",
-                IngredientFixture.updated_carrot().getDescription()
-        );
-
-        mockMvc.perform(patch(this.ingredientsEndPoint + "/" + IngredientFixture.updated_carrot()
-                        .getUuid()
-                        .uuid()
-                        .toString()).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testUpdateIngredientWithNameTooLong() throws Exception {
-        String longName = "A".repeat(51); // 51 characters
-        UpdateIngredientCommand command = new UpdateIngredientCommand(
-                longName,
-                IngredientFixture.updated_carrot().getDescription()
-        );
-
-        mockMvc.perform(patch(this.ingredientsEndPoint + "/" + IngredientFixture.updated_carrot()
-                        .getUuid()
-                        .uuid()
-                        .toString()).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testUpdateIngredientWithMinValidNameLength() throws Exception {
-        UpdateIngredientCommand command = new UpdateIngredientCommand(
-                "AB",
+                "A".repeat(stringLength),
                 IngredientFixture.updated_carrot().getDescription()
         );
 
@@ -388,32 +239,15 @@ class IngredientIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath(this.name).value("AB"));
+                .andExpect(jsonPath(this.name).value(command.name()));
     }
 
-    @Test
-    void testUpdateIngredientWithMaxValidNameLength() throws Exception {
-        String maxName = "A".repeat(50); // 50 characters
-        UpdateIngredientCommand command = new UpdateIngredientCommand(
-                maxName,
-                IngredientFixture.updated_carrot().getDescription()
-        );
-
-        mockMvc.perform(patch(this.ingredientsEndPoint + "/" + IngredientFixture.updated_carrot()
-                        .getUuid()
-                        .uuid()
-                        .toString()).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath(this.name).value(maxName));
-    }
-
-    @Test
-    void testUpdateIngredientWithNullDescription() throws Exception {
+    @ParameterizedTest
+    @NullSource
+    void testUpdateIngredientWithBadDescription(String input) throws Exception {
         UpdateIngredientCommand command = new UpdateIngredientCommand(
                 IngredientFixture.updated_carrot().getName(),
-                null
+                input
         );
 
         mockMvc.perform(patch(this.ingredientsEndPoint + "/" + IngredientFixture.updated_carrot()
@@ -424,25 +258,6 @@ class IngredientIntegrationTest {
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testUpdateIngredientWithEmptyDescription() throws Exception {
-        CreateIngredientCommand command = new CreateIngredientCommand(
-                IngredientFixture.updated_carrot().getName(),
-                ""
-        );
-
-        mockMvc.perform(patch(this.ingredientsEndPoint + "/" + IngredientFixture.updated_carrot()
-                        .getUuid()
-                        .uuid()
-                        .toString()).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath(this.name).value(IngredientFixture.updated_carrot()
-                        .getName()))
-                .andExpect(jsonPath(this.description).value(""));
     }
 
     @Test

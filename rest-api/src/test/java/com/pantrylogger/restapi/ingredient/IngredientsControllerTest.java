@@ -2,13 +2,13 @@ package com.pantrylogger.restapi.ingredient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 
 import com.pantrylogger.domain.IngredientFixture;
@@ -35,12 +35,12 @@ class IngredientsControllerTest {
 
     @BeforeEach
     void setup() {
-        this.getAllIngredientsUseCase = Mockito.mock(GetAllIngredientsUseCase.class);
-        this.getIngredientByUuidUseCase = Mockito.mock(
+        this.getAllIngredientsUseCase = mock(GetAllIngredientsUseCase.class);
+        this.getIngredientByUuidUseCase = mock(
                 GetIngredientByUuidUseCase.class);
-        this.createIngredientUseCase = Mockito.mock(CreateIngredientUseCase.class);
-        this.updateIngredientUseCase = Mockito.mock(UpdateIngredientUseCase.class);
-        this.deleteIngredientUseCase = Mockito.mock(DeleteIngredientUseCase.class);
+        this.createIngredientUseCase = mock(CreateIngredientUseCase.class);
+        this.updateIngredientUseCase = mock(UpdateIngredientUseCase.class);
+        this.deleteIngredientUseCase = mock(DeleteIngredientUseCase.class);
 
         controller = new IngredientsController(
                 this.getAllIngredientsUseCase,

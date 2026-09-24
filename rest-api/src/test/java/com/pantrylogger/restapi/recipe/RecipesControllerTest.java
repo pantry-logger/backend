@@ -2,6 +2,7 @@ package com.pantrylogger.restapi.recipe;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 
 import com.pantrylogger.domain.RecipeFixture;
@@ -34,15 +34,15 @@ class RecipesControllerTest {
 
     private RecipesController recipesController;
 
-    private final GetAllAccessibleRecipesUseCase getAllAccessibleRecipesUseCase = Mockito.mock(
+    private final GetAllAccessibleRecipesUseCase getAllAccessibleRecipesUseCase = mock(
             GetAllAccessibleRecipesUseCase.class);
-    private final GetRecipeByUuidUseCase getRecipeByUuidUseCase = Mockito.mock(
+    private final GetRecipeByUuidUseCase getRecipeByUuidUseCase = mock(
             GetRecipeByUuidUseCase.class);
-    private final CreateRecipeUseCase createRecipeUseCase = Mockito.mock(
+    private final CreateRecipeUseCase createRecipeUseCase = mock(
             CreateRecipeUseCase.class);
-    private final UpdateRecipeUseCase updateRecipeUseCase = Mockito.mock(
+    private final UpdateRecipeUseCase updateRecipeUseCase = mock(
             UpdateRecipeUseCase.class);
-    private final DeleteRecipeUseCase deleteRecipeUseCase = Mockito.mock(
+    private final DeleteRecipeUseCase deleteRecipeUseCase = mock(
             DeleteRecipeUseCase.class);
 
     private final List<Recipe> testRecipes = List.of(
@@ -54,7 +54,7 @@ class RecipesControllerTest {
 
     @BeforeEach
     void setup() {
-        GetAllRecipesUseCase mockGetAllRecipesUseCase = Mockito.mock(
+        GetAllRecipesUseCase mockGetAllRecipesUseCase = mock(
                 GetAllRecipesUseCase.class);
         when(mockGetAllRecipesUseCase.execute()).thenReturn(this.testRecipes);
 

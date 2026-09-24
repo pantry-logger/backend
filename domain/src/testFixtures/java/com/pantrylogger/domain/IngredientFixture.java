@@ -1,5 +1,7 @@
 package com.pantrylogger.domain;
 
+import java.util.stream.Stream;
+
 import com.pantrylogger.domain.ingredient.Ingredient;
 import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 import com.pantrylogger.domain.ingredient.IngredientAmount;
@@ -132,4 +134,15 @@ public class IngredientFixture {
                 Amount.of(100, IngredientAmountUnit.GRAM)
         );
     }
+
+    public static Stream<String> badNames() {
+        return Stream.of(
+                null,
+                "",
+                " ",
+                "A",
+                "A".repeat(51)
+        );
+    }
+
 }

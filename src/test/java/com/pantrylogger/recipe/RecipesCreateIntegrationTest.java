@@ -9,6 +9,10 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -67,7 +71,6 @@ class RecipesCreateIntegrationTest {
 
     private final String message = "$.message";
     private final String name = "$.name";
-    private final String description = "$.description";
     private final String recipesEndPoint = "/recipes";
 
     @DynamicPropertySource
@@ -120,10 +123,12 @@ class RecipesCreateIntegrationTest {
                         .getName()));
     }
 
-    @Test
-    void testCreateRecipeWithNullName() throws Exception {
+    @ParameterizedTest
+    @NullSource
+    @MethodSource("com.pantrylogger.domain.RecipeFixture#badNames")
+    void testCreateRecipeWithNullName(String input) throws Exception {
         CreateRecipeCommand command = new CreateRecipeCommand(
-                null,
+                input,
                 this.createRecipe.getDescription(),
                 this.createRecipe.getVisibility()
         );
@@ -135,71 +140,11 @@ class RecipesCreateIntegrationTest {
                 .andExpect(jsonPath(this.message).exists());
     }
 
-    @Test
-    void testCreateRecipeWithBlankName() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {5, 25, 50})
+    void testCreateRecipeWithValidNameLength(int stringLength) throws Exception {
         CreateRecipeCommand command = new CreateRecipeCommand(
-                "",
-                this.createRecipe.getDescription(),
-                this.createRecipe.getVisibility()
-        );
-
-        mockMvc.perform(post(this.recipesEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testCreateRecipeWithWhitespaceOnlyName() throws Exception {
-        CreateRecipeCommand command = new CreateRecipeCommand(
-                "   ",
-                this.createRecipe.getDescription(),
-                this.createRecipe.getVisibility()
-        );
-
-        mockMvc.perform(post(this.recipesEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testCreateRecipeWithNameTooShort() throws Exception {
-        CreateRecipeCommand command = new CreateRecipeCommand(
-                "A",
-                this.createRecipe.getDescription(),
-                this.createRecipe.getVisibility()
-        );
-
-        mockMvc.perform(post(this.recipesEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testCreateRecipeWithNameTooLong() throws Exception {
-        String longName = "A".repeat(51); // 51 characters
-        CreateRecipeCommand command = new CreateRecipeCommand(
-                longName,
-                this.createRecipe.getDescription(),
-                this.createRecipe.getVisibility()
-        );
-
-        mockMvc.perform(post(this.recipesEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testCreateRecipeWithMinValidNameLength() throws Exception {
-        CreateRecipeCommand command = new CreateRecipeCommand(
-                "Curry",
+                "a".repeat(stringLength),
                 this.createRecipe.getDescription(),
                 this.createRecipe.getVisibility()
         );
@@ -208,30 +153,15 @@ class RecipesCreateIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath(this.name).value("Curry"));
+                .andExpect(jsonPath(this.name).value(command.name()));
     }
 
-    @Test
-    void testCreateRecipeWithMaxValidNameLength() throws Exception {
-        String maxName = "A".repeat(50); // 50 characters
-        CreateRecipeCommand command = new CreateRecipeCommand(
-                maxName,
-                this.createRecipe.getDescription(),
-                this.createRecipe.getVisibility()
-        );
-
-        mockMvc.perform(post(this.recipesEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath(this.name).value(maxName));
-    }
-
-    @Test
-    void testCreateRecipeWithNullDescription() throws Exception {
+    @ParameterizedTest
+    @NullSource
+    void testCreateRecipeWithBadDescription(String input) throws Exception {
         CreateRecipeCommand command = new CreateRecipeCommand(
                 this.createRecipe.getName(),
-                null,
+                input,
                 this.createRecipe.getVisibility()
         );
 
@@ -240,23 +170,6 @@ class RecipesCreateIntegrationTest {
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testCreateRecipeWithEmptyDescription() throws Exception {
-        CreateRecipeCommand command = new CreateRecipeCommand(
-                this.createRecipe.getName(),
-                "",
-                this.createRecipe.getVisibility()
-        );
-
-        mockMvc.perform(post(this.recipesEndPoint).with(asUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath(this.name).value(RecipeFixture.createRecipe()
-                        .getName()))
-                .andExpect(jsonPath(this.description).value(""));
     }
 
     @Test

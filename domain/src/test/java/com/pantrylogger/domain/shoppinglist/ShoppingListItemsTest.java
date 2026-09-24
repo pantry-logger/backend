@@ -15,48 +15,50 @@ import com.pantrylogger.domain.user.Username;
 
 class ShoppingListItemsTest {
 
-    private final Username member = UserFixture.basicTestUser().getUsername();
-    private final ShoppingList shoppingList = ShoppingListFixture.emptyShoppingList(
-            Set.of(
-                    this.member));
-
     @Test
     void addOneItemTest() {
+        Username member = UserFixture.basicTestUser().getUsername();
+        ShoppingList shoppingList = ShoppingListFixture.emptyShoppingList(Set.of(
+                member));
         IngredientAmount ingredientAmount = IngredientFixture.mushroomsAmount();
 
-        assertEquals(0, this.shoppingList.getItems().size());
-        this.shoppingList.addItem(this.member, ingredientAmount);
-        assertEquals(1, this.shoppingList.getItems().size());
+        assertEquals(0, shoppingList.getItems().size());
+        shoppingList.addItem(member, ingredientAmount);
+        assertEquals(1, shoppingList.getItems().size());
         assertEquals(
                 ingredientAmount.getIngredient().getName(),
-                this.shoppingList.getItems()
+                shoppingList.getItems()
                         .getFirst()
                         .getIngredientAmount()
                         .getIngredient()
                         .getName()
         );
         assertEquals(
-                this.member,
-                this.shoppingList.getItems().getFirst().getAddedBy()
+                member,
+                shoppingList.getItems().getFirst().getAddedBy()
         );
     }
 
     @Test
+    @SuppressWarnings("checkstyle:executablestatementcount")
     void addOneItemThatExistsTest() {
+        Username member = UserFixture.basicTestUser().getUsername();
+        ShoppingList shoppingList = ShoppingListFixture.emptyShoppingList(Set.of(
+                member));
         IngredientAmount ingredientAmount = IngredientFixture.mushroomsAmount();
         IngredientAmount ingredientAmountOther = IngredientFixture.mushroomsAmount();
         final int expectedAmountValue = ingredientAmount.getAmount()
                 .rawValue() * 2;
 
-        this.shoppingList.addItem(this.member, ingredientAmount);
+        shoppingList.addItem(member, ingredientAmount);
         assertEquals(
                 ingredientAmount.getAmount().rawValue(),
-                this.shoppingList.getItems()
+                shoppingList.getItems()
                         .getFirst()
                         .getIngredientAmount()
                         .getAmount().rawValue()
         );
-        shoppingList.addItem(this.member, ingredientAmountOther);
+        shoppingList.addItem(member, ingredientAmountOther);
         assertEquals(1, shoppingList.getItems().size());
         assertEquals(
                 expectedAmountValue,

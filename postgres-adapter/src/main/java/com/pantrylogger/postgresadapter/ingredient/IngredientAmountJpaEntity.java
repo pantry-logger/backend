@@ -11,6 +11,9 @@ import jakarta.persistence.OneToOne;
 
 import com.pantrylogger.domain.ingredient.IngredientAmount;
 import com.pantrylogger.domain.ingredient.amount.Amount;
+import com.pantrylogger.domain.ingredient.amount.Amount.Individual;
+import com.pantrylogger.domain.ingredient.amount.Amount.Volume;
+import com.pantrylogger.domain.ingredient.amount.Amount.Weight;
 import com.pantrylogger.domain.ingredient.amount.IndividualAmount;
 import com.pantrylogger.domain.ingredient.amount.VolumeAmount;
 import com.pantrylogger.domain.ingredient.amount.WeightAmount;
@@ -49,16 +52,16 @@ public class IngredientAmountJpaEntity {
         this.ingredient = new IngredientJpaEntity(ingredientAmount.getIngredient());
 
         switch (ingredientAmount.getAmount()) {
-            case Amount.Weight w -> {
-                this.amount = w.value().asMilligrams();
+            case Weight(var w) -> {
+                this.amount = w.asMilligrams();
                 this.type = AmountType.WEIGHT;
             }
-            case Amount.Volume v -> {
-                this.amount = v.value().asMilliliters();
+            case Volume(var v) -> {
+                this.amount = v.asMilliliters();
                 this.type = AmountType.VOLUME;
             }
-            case Amount.Individual i -> {
-                this.amount = i.value().asQuantity();
+            case Individual(var i) -> {
+                this.amount = i.asQuantity();
                 this.type = AmountType.INDIVIDUAL;
             }
         }

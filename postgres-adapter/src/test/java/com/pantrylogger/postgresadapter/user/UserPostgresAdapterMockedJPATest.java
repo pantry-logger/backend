@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
@@ -19,7 +21,7 @@ import com.pantrylogger.domain.user.Username;
 
 class UserPostgresAdapterMockedJPATest {
     private UserPostgresAdapter adapter;
-    private final UserJpaEntityRepository mockRepository = Mockito.mock(
+    private final UserJpaEntityRepository mockRepository = mock(
             UserJpaEntityRepository.class);
 
     private final User testUser = UserFixture.basicTestUser();
@@ -33,20 +35,20 @@ class UserPostgresAdapterMockedJPATest {
     void setup() {
         this.adapter = new UserPostgresAdapter(this.mockRepository);
 
-        Mockito.when(this.mockRepository.findByEmail(this.testUser.getEmail()
-                        .toString()))
+        when(this.mockRepository.findByEmail(this.testUser.getEmail()
+                .toString()))
                 .thenReturn(Optional.of(this.testEntity));
-        Mockito.when(this.mockRepository.findByEmail(this.missingEmail
-                        .toString()))
+        when(this.mockRepository.findByEmail(this.missingEmail
+                .toString()))
                 .thenReturn(Optional.empty());
-        Mockito.when(this.mockRepository.findByUsername(this.testUser.getUsername()
-                        .toString()))
+        when(this.mockRepository.findByUsername(this.testUser.getUsername()
+                .toString()))
                 .thenReturn(Optional.of(this.testEntity));
-        Mockito.when(this.mockRepository.findByUsername(this.missingUsername
-                        .toString()))
+        when(this.mockRepository.findByUsername(this.missingUsername
+                .toString()))
                 .thenReturn(Optional.empty());
-        Mockito.when(this.mockRepository.save(
-                        Mockito.any(UserJpaEntity.class)))
+        when(this.mockRepository.save(
+                Mockito.any(UserJpaEntity.class)))
                 .thenReturn(this.testEntity);
     }
 

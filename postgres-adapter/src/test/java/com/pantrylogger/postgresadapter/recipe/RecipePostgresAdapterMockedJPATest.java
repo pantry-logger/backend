@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +24,7 @@ import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
 
 class RecipePostgresAdapterMockedJPATest {
     private RecipePostgresAdapter adapter;
-    private RecipeJpaEntityRepository mockRepository = Mockito.mock(
+    private RecipeJpaEntityRepository mockRepository = mock(
             RecipeJpaEntityRepository.class);
 
     private final RecipeUUID badRecipeUUID = RecipeFixture.badUuid();
@@ -34,15 +36,15 @@ class RecipePostgresAdapterMockedJPATest {
     void setup() {
         this.adapter = new RecipePostgresAdapter(this.mockRepository);
 
-        Mockito.when(this.mockRepository.findAll())
+        when(this.mockRepository.findAll())
                 .thenReturn(List.of(this.testEntity));
-        Mockito.when(this.mockRepository.findByIdWithInstructions(
-                        testRecipe.getUuid().uuid()))
+        when(this.mockRepository.findByIdWithInstructions(
+                testRecipe.getUuid().uuid()))
                 .thenReturn(Optional.of(this.testEntity));
-        Mockito.when(this.mockRepository.findByIdWithInstructions(
+        when(this.mockRepository.findByIdWithInstructions(
                 badRecipeUUID.uuid())).thenReturn(Optional.empty());
-        Mockito.when(this.mockRepository.save(
-                        Mockito.any(RecipeJpaEntity.class)))
+        when(this.mockRepository.save(
+                Mockito.any(RecipeJpaEntity.class)))
                 .thenReturn(this.testEntity);
     }
 

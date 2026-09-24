@@ -2,8 +2,7 @@ package com.pantrylogger.restapi.security;
 
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,8 +18,6 @@ import com.pantrylogger.domain.user.Username;
 
 @Component
 public class JwtToUserDetailsConverter implements Converter<Jwt, AbstractAuthenticationToken> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-            JwtToUserDetailsConverter.class);
     private final UserRepositoryPort userRepository;
     private final KeycloakRealmRoleConverter authoritiesConverter = new KeycloakRealmRoleConverter();
 
@@ -46,6 +43,7 @@ public class JwtToUserDetailsConverter implements Converter<Jwt, AbstractAuthent
                 user.getUsername().toString()
         ) {
             @Override
+            @NullMarked
             public Object getPrincipal() {
                 return principal; // override so @AuthenticationPrincipal gives CustomUserDetails
             }
@@ -53,7 +51,6 @@ public class JwtToUserDetailsConverter implements Converter<Jwt, AbstractAuthent
     }
 
     private User provisionUserFromToken(Jwt jwt) {
-        LOGGER.debug(jwt.getClaims().toString());
         User user = new User(
                 new ExternalAuthId(jwt.getSubject()),
                 new Email(jwt.getClaimAsString("email")),

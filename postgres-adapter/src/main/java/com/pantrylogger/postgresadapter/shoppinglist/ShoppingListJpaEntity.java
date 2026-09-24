@@ -55,7 +55,7 @@ public class ShoppingListJpaEntity {
         this.items = shoppingList.getItems()
                 .stream()
                 .map(item -> new ShoppingListItemJpaEntity(this, item))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<ShoppingListItemJpaEntity> getItems() {
@@ -71,7 +71,7 @@ public class ShoppingListJpaEntity {
                         .collect(Collectors.toSet()),
                 this.items.stream()
                         .map(ShoppingListItemJpaEntity::toShoppingListItem)
-                        .collect(Collectors.toList())
+                        .toList()
 
         );
     }

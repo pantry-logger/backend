@@ -3,8 +3,10 @@ package com.pantrylogger.postgresadapter.ingredient;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +23,11 @@ import com.pantrylogger.domain.ingredient.Ingredient.IngredientUUID;
 class IngredientPostgresAdapterMockedJPATest {
 
     private IngredientPostgresAdapter adapter;
-    private final IngredientJpaEntityRepository mockRepository = Mockito.mock(
+    private final IngredientJpaEntityRepository mockRepository = mock(
             IngredientJpaEntityRepository.class);
 
-    private final UUID ingredientUUID = UUID.randomUUID();
-    private final UUID badIngredientUUID = UUID.randomUUID();
+    private final IngredientUUID ingredientUUID = new IngredientUUID(UUID.randomUUID());
+    private final IngredientUUID badIngredientUUID = new IngredientUUID(UUID.randomUUID());
     private Ingredient testIngredient;
 
     @BeforeEach
@@ -33,19 +35,19 @@ class IngredientPostgresAdapterMockedJPATest {
         this.adapter = new IngredientPostgresAdapter(this.mockRepository);
 
         this.testIngredient = new Ingredient(
-                new IngredientUUID(ingredientUUID),
+                ingredientUUID,
                 "Salt",
                 "Tastes like the sea"
         );
         IngredientJpaEntity testEntity = new IngredientJpaEntity(testIngredient);
 
-        Mockito.when(this.mockRepository.findAll())
+        when(this.mockRepository.findAll())
                 .thenReturn(List.of(testEntity));
-        Mockito.when(this.mockRepository.findById(ingredientUUID))
+        when(this.mockRepository.findById(ingredientUUID.uuid()))
                 .thenReturn(Optional.of(testEntity));
-        Mockito.when(this.mockRepository.findById(badIngredientUUID))
+        when(this.mockRepository.findById(badIngredientUUID.uuid()))
                 .thenReturn(Optional.empty());
-        Mockito.when(this.mockRepository.save(Mockito.any(IngredientJpaEntity.class)))
+        when(this.mockRepository.save(Mockito.any(IngredientJpaEntity.class)))
                 .thenReturn(testEntity);
     }
 
@@ -62,8 +64,8 @@ class IngredientPostgresAdapterMockedJPATest {
 
     @Test
     void getByUUIDShouldReturnIngredient() {
-        Optional<Ingredient> optionalIngredient = this.adapter.getByUUID(new IngredientUUID(
-                this.ingredientUUID));
+        Optional<Ingredient> optionalIngredient = this.adapter.getByUUID(
+                this.ingredientUUID);
         assertTrue(optionalIngredient.isPresent());
 
         Ingredient ingredient = optionalIngredient.get();
@@ -74,8 +76,8 @@ class IngredientPostgresAdapterMockedJPATest {
 
     @Test
     void getWithBadIdShouldReturnEmptyOptional() {
-        Optional<Ingredient> optionalIngredient = this.adapter.getByUUID(new IngredientUUID(
-                this.badIngredientUUID));
+        Optional<Ingredient> optionalIngredient = this.adapter.getByUUID(
+                this.badIngredientUUID);
         assertTrue(optionalIngredient.isEmpty());
     }
 
@@ -88,7 +90,7 @@ class IngredientPostgresAdapterMockedJPATest {
 
     @Test
     void deleteShouldWorkSuccesfully() {
-        this.adapter.delete(new IngredientUUID(ingredientUUID));
+        this.adapter.delete(ingredientUUID);
         verify(this.mockRepository, times(1)).delete(Mockito.any(
                 IngredientJpaEntity.class));
     }
@@ -97,7 +99,7 @@ class IngredientPostgresAdapterMockedJPATest {
     void deleteWithBadIdShouldThrowException() {
         assertThrows(
                 EntityNotFoundException.class,
-                () -> this.adapter.delete(new IngredientUUID(badIngredientUUID))
+                () -> this.adapter.delete(this.badIngredientUUID)
         );
     }
 }
