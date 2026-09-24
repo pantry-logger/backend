@@ -33,7 +33,7 @@ import com.pantrylogger.restapi.security.CustomUserDetails;
 public class RecipeIngredientsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
-            RecipesController.class);
+            RecipeIngredientsController.class);
     private final AddIngredientAmountUseCase addIngredientAmountUseCase;
     private final UpdateIngredientAmountUseCase updateIngredientAmountUseCase;
     private final MoveIngredientAmountUseCase moveIngredientAmountUseCase;

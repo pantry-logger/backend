@@ -45,7 +45,7 @@ public class ShoppingList {
         this.uuid = uuid;
         this.name = name;
         this.members = new HashSet<>(members);
-        this.items = items;
+        this.items = new ArrayList<>(items);
     }
 
     public ShoppingList(String name, Set<Username> members) {

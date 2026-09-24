@@ -87,15 +87,15 @@ class ShoppingListItemIntegrationTest {
         this.anotherTestUser = userRepository.save(UserFixture.anotherBasicTestUser());
         this.emptyShoppingList = ShoppingListFixture.emptyShoppingList(Set.of(
                 testUser.getUsername()));
-        ShoppingListItem shoppingListItem = ShoppingListFixture.aShoppingListItem(
+        ShoppingListItem tempShoppingListItem = ShoppingListFixture.aShoppingListItem(
                 this.testUser.getUsername());
 
-        this.ingredientRepository.save(shoppingListItem.getIngredientAmount()
+        this.ingredientRepository.save(tempShoppingListItem.getIngredientAmount()
                 .getIngredient());
 
         this.emptyShoppingList.addItem(
                 testUser.getUsername(),
-                shoppingListItem.getIngredientAmount()
+                tempShoppingListItem.getIngredientAmount()
         );
 
         shoppingListRepository.save(this.emptyShoppingList);

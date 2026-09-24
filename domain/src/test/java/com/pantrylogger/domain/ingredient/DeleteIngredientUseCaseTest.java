@@ -2,12 +2,12 @@ package com.pantrylogger.domain.ingredient;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import com.pantrylogger.domain.IngredientFixture;
 import com.pantrylogger.domain.exception.EntityNotFoundException;
@@ -18,7 +18,7 @@ class DeleteIngredientUseCaseTest {
 
     private DeleteIngredientUseCase deleteIngredientUseCase;
 
-    private final IngredientRepositoryPort mockIngredientRepository = Mockito.mock(
+    private final IngredientRepositoryPort mockIngredientRepository = mock(
             IngredientRepositoryPort.class);
     private final IngredientUUID badUUID = IngredientFixture.badUUID();
     private final Ingredient ingredient = IngredientFixture.tomato();

@@ -3,6 +3,8 @@ package com.pantrylogger.domain.ingredient;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
@@ -26,7 +28,7 @@ class UpdateIngredientUseCaseTest {
 
     @BeforeEach
     void setup() {
-        IngredientRepositoryPort mockIngredientRepository = Mockito.mock(
+        IngredientRepositoryPort mockIngredientRepository = mock(
                 IngredientRepositoryPort.class);
         this.updateIngredientUseCase = new UpdateIngredientUseCase(
                 mockIngredientRepository);
@@ -39,7 +41,7 @@ class UpdateIngredientUseCaseTest {
                 IngredientFixture.updated_carrot().getDescription()
         );
 
-        Mockito.when(mockIngredientRepository.getByUUID(this.ingredientUUID))
+        when(mockIngredientRepository.getByUUID(this.ingredientUUID))
                 .thenReturn(Optional.of(originalIngredient));
 
         doThrow(new EntityNotFoundException(String.format(
@@ -47,7 +49,7 @@ class UpdateIngredientUseCaseTest {
                 this.badUUID.uuid()
         ))).when(mockIngredientRepository).getByUUID(this.badUUID);
 
-        Mockito.when(mockIngredientRepository.save(Mockito.any(Ingredient.class)))
+        when(mockIngredientRepository.save(Mockito.any(Ingredient.class)))
                 .thenReturn(this.expectedIngredient);
     }
 

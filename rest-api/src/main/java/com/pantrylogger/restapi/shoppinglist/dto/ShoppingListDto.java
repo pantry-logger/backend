@@ -25,8 +25,7 @@ public record ShoppingListDto(
                 shoppingList.getItems()
                         .stream()
                         .map(ShoppingListItemDto::new)
-                        .collect(Collectors.toList()
-                        )
+                        .toList()
         );
     }
 }

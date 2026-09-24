@@ -9,6 +9,10 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -64,13 +68,10 @@ class RecipesUpdateIntegrationTest {
 
     private final Recipe emptyRecipe = RecipeFixture.emptyRecipe();
     private final Recipe privateRecipe = RecipeFixture.privateEmptyRecipe();
-    private final Recipe createRecipe = RecipeFixture.createRecipe();
     private final Recipe updatedRecipe = RecipeFixture.updatedEmptyRecipe();
     private final Recipe recipeWithInstructions = RecipeFixture.recipeWithInstructions();
 
     private final String message = "$.message";
-    private final String name = "$.name";
-    private final String description = "$.description";
     private final String recipesEndPoint = "/recipes";
 
     @DynamicPropertySource
@@ -120,10 +121,12 @@ class RecipesUpdateIntegrationTest {
         return authentication(auth);
     }
 
-    @Test
-    void testUpdateRecipeWithNullName() throws Exception {
+    @ParameterizedTest
+    @NullSource
+    @MethodSource("com.pantrylogger.domain.RecipeFixture#badNames")
+    void testUpdateRecipeWithBadName(String input) throws Exception {
         UpdateRecipeCommand command = new UpdateRecipeCommand(
-                null,
+                input,
                 this.updatedRecipe.getDescription(),
                 this.updatedRecipe.getVisibility()
         );
@@ -138,83 +141,11 @@ class RecipesUpdateIntegrationTest {
                 .andExpect(jsonPath(this.message).exists());
     }
 
-    @Test
-    void testUpdateRecipeWithBlankName() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {5, 50})
+    void testUpdateRecipeWithValidNameLength(int stringLength) throws Exception {
         UpdateRecipeCommand command = new UpdateRecipeCommand(
-                "",
-                this.updatedRecipe.getDescription(),
-                this.updatedRecipe.getVisibility()
-        );
-
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + RecipeFixture.updatedEmptyRecipe()
-                        .getUuid()
-                        .uuid()
-                        .toString()).contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command))
-                        .with(asUser()))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testUpdateRecipeWithWhitespaceOnlyName() throws Exception {
-        UpdateRecipeCommand command = new UpdateRecipeCommand(
-                "   ",
-                this.updatedRecipe.getDescription(),
-                this.updatedRecipe.getVisibility()
-        );
-
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + RecipeFixture.updatedEmptyRecipe()
-                        .getUuid()
-                        .uuid()
-                        .toString()).contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command))
-                        .with(asUser()))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testUpdateRecipeWithNameTooShort() throws Exception {
-        UpdateRecipeCommand command = new UpdateRecipeCommand(
-                "A",
-                this.updatedRecipe.getDescription(),
-                this.updatedRecipe.getVisibility()
-        );
-
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + RecipeFixture.updatedEmptyRecipe()
-                        .getUuid()
-                        .uuid()
-                        .toString()).contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command))
-                        .with(asUser()))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testUpdateRecipeWithNameTooLong() throws Exception {
-        String longName = "A".repeat(51); // 51 characters
-        UpdateRecipeCommand command = new UpdateRecipeCommand(
-                longName,
-                this.updatedRecipe.getDescription(),
-                this.updatedRecipe.getVisibility()
-        );
-
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + RecipeFixture.updatedEmptyRecipe()
-                        .getUuid()
-                        .uuid()
-                        .toString()).contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command))
-                        .with(asUser()))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testUpdateRecipeWithMinValidNameLength() throws Exception {
-        UpdateRecipeCommand command = new UpdateRecipeCommand(
-                "Curry",
+                "A".repeat(stringLength),
                 this.updatedRecipe.getDescription(),
                 this.updatedRecipe.getVisibility()
         );
@@ -226,33 +157,15 @@ class RecipesUpdateIntegrationTest {
                         .content(objectMapper.writeValueAsString(command))
                         .with(asUser()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath(this.name).value("Curry"));
+                .andExpect(jsonPath("$.name").value(command.name()));
     }
 
-    @Test
-    void testUpdateRecipeWithMaxValidNameLength() throws Exception {
-        String maxName = "A".repeat(50);
-        UpdateRecipeCommand command = new UpdateRecipeCommand(
-                maxName,
-                this.updatedRecipe.getDescription(),
-                this.updatedRecipe.getVisibility()
-        );
-
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + RecipeFixture.updatedEmptyRecipe()
-                        .getUuid()
-                        .uuid()
-                        .toString()).contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command))
-                        .with(asUser()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath(this.name).value(maxName));
-    }
-
-    @Test
-    void testUpdateRecipeWithNullDescription() throws Exception {
+    @ParameterizedTest
+    @NullSource
+    void testUpdateRecipeWithNullDescription(String input) throws Exception {
         UpdateRecipeCommand command = new UpdateRecipeCommand(
                 this.updatedRecipe.getName(),
-                null,
+                input,
                 this.updatedRecipe.getVisibility()
         );
 
@@ -264,26 +177,6 @@ class RecipesUpdateIntegrationTest {
                         .with(asUser()))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(this.message).exists());
-    }
-
-    @Test
-    void testUpdateRecipeWithEmptyDescription() throws Exception {
-        UpdateRecipeCommand command = new UpdateRecipeCommand(
-                this.updatedRecipe.getName(),
-                "",
-                this.updatedRecipe.getVisibility()
-        );
-
-        mockMvc.perform(patch(this.recipesEndPoint + "/" + RecipeFixture.updatedEmptyRecipe()
-                        .getUuid()
-                        .uuid()
-                        .toString()).contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(command))
-                        .with(asUser()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath(this.name).value(RecipeFixture.updatedEmptyRecipe()
-                        .getName()))
-                .andExpect(jsonPath(this.description).value(""));
     }
 
     @Test

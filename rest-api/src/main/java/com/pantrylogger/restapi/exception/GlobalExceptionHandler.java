@@ -80,7 +80,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception e) {
-        LOGGER.error("Unexpected error occurred: {}", e.getMessage());
+        LOGGER.error("Unexpected error occurred: ", e);
+        LOGGER.error("message: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse("An unexpected error occurred", 500));
     }

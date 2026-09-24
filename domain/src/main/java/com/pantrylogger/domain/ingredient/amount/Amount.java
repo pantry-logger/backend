@@ -42,23 +42,20 @@ public sealed interface Amount permits Amount.Weight, Amount.Volume, Amount.Indi
     @SuppressWarnings("checkstyle:Indentation")
     default Amount add(Amount other) {
         return switch (this) {
-            case Weight w -> switch (other) {
-                case Weight w2 -> new Weight(w.value().plus(w2.value()));
-                case Volume ignored -> throw incompatibleAddition(this, other);
-                case Individual ignored ->
+            case Weight(var w) -> switch (other) {
+                case Weight(var wOther) -> new Weight(w.plus(wOther));
+                case Volume _, Individual _ ->
                         throw incompatibleAddition(this, other);
             };
-            case Volume v -> switch (other) {
-                case Volume v2 -> new Volume(v.value().plus(v2.value()));
-                case Weight ignored -> throw incompatibleAddition(this, other);
-                case Individual ignored ->
+            case Volume(var v) -> switch (other) {
+                case Volume(var vOther) -> new Volume(v.plus(vOther));
+                case Weight _, Individual _ ->
                         throw incompatibleAddition(this, other);
             };
-            case Individual i -> switch (other) {
-                case Individual i2 ->
-                        new Individual(i.value().plus(i2.value()));
-                case Weight ignored -> throw incompatibleAddition(this, other);
-                case Volume ignored -> throw incompatibleAddition(this, other);
+            case Individual(var i) -> switch (other) {
+                case Individual(var iOther) -> new Individual(i.plus(iOther));
+                case Weight _, Volume _ ->
+                        throw incompatibleAddition(this, other);
             };
         };
     }

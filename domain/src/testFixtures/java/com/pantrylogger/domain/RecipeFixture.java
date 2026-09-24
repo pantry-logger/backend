@@ -2,6 +2,7 @@ package com.pantrylogger.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.pantrylogger.domain.recipe.Recipe;
 import com.pantrylogger.domain.recipe.Recipe.RecipeUUID;
@@ -30,6 +31,7 @@ public class RecipeFixture {
             new ArrayList<>(),
             new ArrayList<>()
     );
+
     private static final Recipe MISSING_RECIPE = new Recipe(
             new RecipeUUID("d936813c-62c1-4f8e-a57f-9823f57c8483"),
             UserFixture.basicTestUser().getUsername(),
@@ -147,5 +149,15 @@ public class RecipeFixture {
 
     public static Recipe recipeWithIngredients() {
         return RECIPE_WITH_INGREDIENTS;
+    }
+
+    public static Stream<String> badNames() {
+        return Stream.of(
+                null,
+                "",
+                " ",
+                "A",
+                "A".repeat(51)
+        );
     }
 }

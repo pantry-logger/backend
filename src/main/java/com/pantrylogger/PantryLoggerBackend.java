@@ -12,6 +12,6 @@ public class PantryLoggerBackend {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(PantryLoggerBackend.class);
+        SpringApplication.run(PantryLoggerBackend.class, args);
     }
 }
